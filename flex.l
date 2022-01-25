@@ -202,6 +202,11 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
         return DOBLE_DOS_PUNTOS;
     }
 
+"while" {
+            debug("%s\n", yytext, 0);
+            return WHILE;
+        }
+
 "function"  {
                 debug("%s\n", yytext, 0);
                 inFunction = true;

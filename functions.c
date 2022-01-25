@@ -77,8 +77,8 @@ void emet(char *type, int nArgs, ...) {
             instruction = generateString("GOTO", 0);
         }
         else {
-            char *val = strdup(va_arg(ap, char *));
-            instruction = generateString("GOTO %s", 1, val);
+            int quad = va_arg(ap, int);
+            instruction = generateString("GOTO %i", 1, quad);
         }
     } else if (isSameType(type, INSTR_PUT)) {
         char *element = strdup(va_arg(ap,
@@ -300,7 +300,7 @@ value_info *joinElementsVectors(value_info *vec1, value_info *vec2, int numElemV
     return aux;
 }
 
-int *joinIntegerLists(integer_list list1,integer_list list2) {
+int *joinIntegerLists(integer_list list1, integer_list list2) {
     int totalElem = list1.numElem + list2.numElem;
     int *aux = realloc(list1.elements, totalElem * sizeof(value_info));
     int cont = list1.numElem;
@@ -412,7 +412,7 @@ void checkIfIsNeededCast(char *expectedType, value_info *arrivedValue) {
 
 void completa(integer_list list, int numLinea)
 {
-    for(int i=0;i<list.numElem; i++)
+    for(int i = 0;i < list.numElem; i++)
     {
         c3a[list.elements[i]] = generateString("%s %s",2,c3a[list.elements[i]], itos(numLinea));
     }

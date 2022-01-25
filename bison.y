@@ -37,13 +37,13 @@
 
 %union
 {
-
 	int enter;
 	float real;
 	char *cadena;
 	ident ident;
 	value_info valueInfo;
 	boolean_info booleanInfo;
+	integer_list integerList;
 	tensor_info tensorInfo;
 	tensor_ini_info tensorIniInfo;
 	func_param_info funcParamInfo;
@@ -52,7 +52,7 @@
 	void *no_definit;
 }
 
-%token <no_definit> ASSIGN START VALUE_RETURN DIRECT_RETURN END DOBLE_DOS_PUNTOS LLAVE_ABIERTA LLAVE_CERRADA OP_BOOL_AND OP_BOOL_OR NEGACION
+%token <no_definit> ASSIGN START VALUE_RETURN DIRECT_RETURN END DOBLE_DOS_PUNTOS LLAVE_ABIERTA LLAVE_CERRADA WHILE OP_BOOL_AND OP_BOOL_OR NEGACION
 %token <enter> INTEGER
 %token <real> FLOAT
 %token <cadena> OP_ARIT_P1 OP_ARIT_P2 ASTERISCO OP_RELACIONAL PARENTESIS_ABIERTO PARENTESIS_CERRADO DIV COMA CORCHETE_ABIERTO CORCHETE_CERRADO PUNTO_Y_COMA TIPO ID_PROC BOOLEAN
@@ -67,6 +67,7 @@
 %type <elementsList> lista_args
 %type <valueInfo> param expresion_aritmetica lista_sumas lista_productos terminal_aritmetico id_arit funcion
 %type <booleanInfo> expresion_booleana lista_or lista_and expresion_booleana_base expresion_relacional terminal_booleano
+%type <integerList> lista_de_sentencias sentencia
 
 %start programa
 
@@ -100,23 +101,63 @@ main : lista_de_sentencias	{
 				    writeLine(sq, "END");
 				}
 
-lista_de_sentencias : lista_de_sentencias sentencia | sentencia
+lista_de_sentencias : lista_de_sentencias sentencia	{
+								if (($1.numElem != 0) && ($2.numElem != 0))
+								{
+									$$.elements = joinIntegerLists($1, $2);
+									$$.numElem = $1.numElem + $2.numElem;
+								}
+								else if ($1.numElem != 0)
+								{
+									$$ = $1;
+								}
+								else if ($2.numElem != 0)
+								{
+									$$ = $2;
+								}
+							}
+ 		| sentencia	{
+ 					$$ = $1;
+ 				}
 
-sentencia : asignacion
+sentencia : asignacion	{
+				$$.elements = NULL;
+				$$.numElem = 0;
+			}
 	| expresion_aritmetica	{
+					$$.elements = NULL;
+					$$.numElem = 0;
 					emet(INSTR_PUT, 1, $1.value);
 				}
-	| expresion_booleana
+	| expresion_booleana	{
+					$$.elements = NULL;
+					$$.numElem = 0;
+				}
 	| ID	{
+			$$.elements = NULL;
+			$$.numElem = 0;
 			emet(INSTR_PUT, 1, $1.lexema);
 		}
 	| VALUE_RETURN expresion_aritmetica	{
+							$$.elements = NULL;
+							$$.numElem = 0;
 							emet(INSTR_RETURN, 1, $2.value);
 						}
 	| DIRECT_RETURN	{
+				$$.elements = NULL;
+				$$.numElem = 0;
 				emet(INSTR_RETURN, 0);
 			}
-	| accion
+	| accion	{
+				$$.elements = NULL;
+				$$.numElem = 0;
+			}
+        | WHILE m expresion_booleana m lista_de_sentencias END	{
+									completa($3.listaCiertos, $4);
+									completa($5, $2);
+									emet(INSTR_BRANCH, 1, $2);
+									$$ = $3.listaFalsos;
+								}
 
 asignacion : ID ASSIGN expresion_aritmetica	{
 							sym_value_type entry;
@@ -381,7 +422,6 @@ lista_and : lista_and OP_BOOL_AND m expresion_booleana_base	{
 									$$.listaCiertos.numElem = $4.listaCiertos.numElem;
 									$$.listaFalsos.elements = joinIntegerLists($1.listaFalsos, $4.listaFalsos);
 									$$.listaFalsos.numElem = $1.listaFalsos.numElem + $4.listaFalsos.numElem;
-
 								}
 			| expresion_booleana_base	{
 								$$ = $1;
@@ -419,7 +459,7 @@ expresion_relacional : lista_sumas OP_RELACIONAL lista_sumas	{
 						}
 
 terminal_booleano : BOOLEAN	{
-					if(isSameType($1,TRUE_VAL))
+					if (isSameType($1, TRUE_VAL))
 					{
 						$$.listaCiertos.elements = createIntegerList(sq);
 						$$.listaCiertos.numElem = 1;
@@ -433,7 +473,7 @@ terminal_booleano : BOOLEAN	{
 						$$.listaFalsos.elements = createIntegerList(sq);
 						$$.listaFalsos.numElem = 1;
 					}
-					emet(INSTR_BRANCH,0);
+					emet(INSTR_BRANCH, 0);
 				}
 		| PARENTESIS_ABIERTO expresion_booleana PARENTESIS_CERRADO	{
 											$$ = $2;
