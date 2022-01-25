@@ -67,6 +67,12 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
                                                 return FLOAT;
                                             }
 
+(true|false)	{
+                    debug("%s\n", yytext, 0);
+                    yylval.cadena = strdup(yytext);
+                    return BOOLEAN;
+                }
+
 (#(.)*|#=(.|\n)*=#) {
                         debug("COMMENT: %s\n", yytext, 0);
                     }
@@ -88,6 +94,27 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
                 yylval.cadena = strdup(yytext);
                 return OP_ARIT_P2;
             }
+
+(">"|">="|"=="|"<="|"<"|"!=")	{
+                                    debug("%s\n", yytext, 0);
+                                    yylval.cadena = strdup(yytext);
+                                    return OP_RELACIONAL;
+                                }
+
+"!"	{
+		debug("%s\n", yytext, 0);
+		return NEGACION;
+	}
+
+&&  {
+        debug("%s\n", yytext, 0);
+        return OP_BOOL_AND;
+    }
+
+"||"    {
+            debug("%s\n", yytext, 0);
+            return OP_BOOL_OR;
+        }
 
 "(" {
         debug("%s\n", yytext, 0);

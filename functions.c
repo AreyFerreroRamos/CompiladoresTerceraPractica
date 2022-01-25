@@ -207,6 +207,33 @@ void doAritmeticOperation(value_info v1, char *operand, value_info v2, value_inf
     finish_val->valueInfoType = LIT_T;
 }
 
+char *doRelationalOperation(value_info element1, char *op, value_info element2)
+{
+    int res;
+    if (isSameType(element1.type, INT32_T))
+    {
+        res = intRelationalOperations(atoi(element1.value), op, atoi(element2.value));
+    }
+    else
+    {
+        res =floatRelationalOperations(atof(element1.value), op, atof(element2.value));
+    }
+    if (res == 1)
+    {
+        return TRUE_VAL;
+    }
+    return FALSE_VAL;
+}
+
+char *negateBoolean(char *boolean)
+{
+    if (isSameType(boolean, TRUE_VAL))
+    {
+        return FALSE_VAL;
+    }
+    return TRUE_VAL;
+}
+
 value_info *joinElementsVectors(value_info *vec1, value_info *vec2, int numElemVec1, int numElemVec2) {
     int totalElem = numElemVec1 + numElemVec2;
     value_info *aux;

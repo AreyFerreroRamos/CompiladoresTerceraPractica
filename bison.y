@@ -41,7 +41,6 @@
 	int enter;
 	float real;
 	char *cadena;
-	bool boolea;
 	ident ident;
 	value_info valueInfo;
 	tensor_info tensorInfo;
@@ -52,10 +51,10 @@
 	void *no_definit;
 }
 
-%token <no_definit> ASSIGN START VALUE_RETURN DIRECT_RETURN END DOBLE_DOS_PUNTOS LLAVE_ABIERTA LLAVE_CERRADA
+%token <no_definit> ASSIGN START VALUE_RETURN DIRECT_RETURN END DOBLE_DOS_PUNTOS LLAVE_ABIERTA LLAVE_CERRADA OP_BOOL_AND OP_BOOL_OR NEGACION
 %token <enter> INTEGER
 %token <real> FLOAT
-%token <cadena> OP_ARIT_P1 OP_ARIT_P2 ASTERISCO OP_ARIT_P3 PARENTESIS_ABIERTO PARENTESIS_CERRADO DIV COMA CORCHETE_ABIERTO CORCHETE_CERRADO PUNTO_Y_COMA TIPO ID_PROC
+%token <cadena> OP_ARIT_P1 OP_ARIT_P2 ASTERISCO OP_RELACIONAL PARENTESIS_ABIERTO PARENTESIS_CERRADO DIV COMA CORCHETE_ABIERTO CORCHETE_CERRADO PUNTO_Y_COMA TIPO ID_PROC BOOLEAN
 %token <ident> ID ID_FUNC ID_ACC
 %token <valueInfo> ID_ARIT
 
@@ -64,7 +63,7 @@
 %type <cadena> op_arit_p1
 %type <funcParamInfo> cabecera_procedimiento cabecera_funcion cabecera_accion lista_params
 %type <elementsList> lista_args
-%type <valueInfo> param expresion_aritmetica lista_sumas lista_productos terminal_aritmetico id_arit funcion
+%type <valueInfo> param expresion_aritmetica lista_sumas lista_productos expresion_booleana lista_or lista_and expresion_booleana_base expresion_relacional terminal_aritmetico terminal_booleano id_arit funcion
 
 %start programa
 
@@ -93,16 +92,19 @@ procedimiento : cabecera_procedimiento lista_de_sentencias END	{
 
 cabecera_procedimiento : cabecera_funcion | cabecera_accion
 
-main : lista_de_sentencias{
-    writeLine(sq, "HALT");
-    writeLine(sq, "END");
-}
+main : lista_de_sentencias	{
+				    writeLine(sq, "HALT");
+				    writeLine(sq, "END");
+				}
 
 lista_de_sentencias : lista_de_sentencias sentencia | sentencia
 
 sentencia : asignacion
 	| expresion_aritmetica	{
 					emet(INSTR_PUT, 1, $1.value);
+				}
+	| expresion_booleana	{
+					printf("\n%s\t%s\n", $1.value, $1.type);
 				}
 	| ID	{
 			emet(INSTR_PUT, 1, $1.lexema);
@@ -188,7 +190,6 @@ lista_indices : lista_indices COMA lista_sumas	{
 
 expresion_aritmetica : lista_sumas
 {
-
 				printf("2VALOR: %s TIPO1: %s TIPO2: %s\n",$1.value,$1.type,$1.valueInfoType);
 }
 
@@ -357,6 +358,66 @@ lista_indices_arit : lista_indices_arit COMA lista_sumas	{
 									yyerror(generateString("El indice -> %s es de tipo %s. El tipo debería ser INT32.", 2, $3.value, $3.type));
 								}
 							}
+
+expresion_booleana : lista_or	{
+					$$ = $1;
+				}
+
+lista_or : lista_or OP_BOOL_OR lista_and	{
+							if (isSameType($1.value, TRUE_VAL) || isSameType($3.value, TRUE_VAL))
+							{
+								$$ = createValueInfo(TRUE_VAL, BOOLEAN_T, LIT_T);
+							}
+							else
+							{
+								$$ = createValueInfo(FALSE_VAL, BOOLEAN_T, LIT_T);
+							}
+						}
+	| lista_and	{
+				$$ = $1;
+			}
+
+lista_and : lista_and OP_BOOL_AND expresion_booleana_base	{
+								if (isSameType($1.value, FALSE_VAL) || isSameType($3.value, FALSE_VAL))
+								{
+									$$ = createValueInfo(FALSE_VAL, BOOLEAN_T, LIT_T);
+								}
+								else
+								{
+									$$ = createValueInfo(TRUE_VAL, BOOLEAN_T, LIT_T);
+								}
+							}
+			| expresion_booleana_base	{
+								$$ = $1;
+							}
+
+expresion_booleana_base : NEGACION expresion_relacional	{
+								$$ = createValueInfo(negateBoolean($2.value), BOOLEAN_T, LIT_T);
+							}
+			| expresion_relacional	{
+							$$ = $1;
+						}
+
+expresion_relacional : lista_sumas OP_RELACIONAL lista_sumas	{
+									if (isSameType($1.type, $3.type))
+									{
+										$$ = createValueInfo(doRelationalOperation($1, $2, $3), BOOLEAN_T, LIT_T);
+									}
+									else
+									{
+										yyerror("No se puede comparar expresiones aritméticas de distinto tipo.");
+									}
+								}
+			| terminal_booleano	{
+							$$ = $1;
+						}
+
+terminal_booleano : BOOLEAN	{
+					$$ = createValueInfo($1, BOOLEAN_T, LIT_T);
+				}
+		| PARENTESIS_ABIERTO expresion_booleana PARENTESIS_CERRADO	{
+											$$ = $2;
+										}
 
 tensor : CORCHETE_ABIERTO lista_componentes CORCHETE_CERRADO	{
        									if (ampliar_vector_dims[$2.dim])

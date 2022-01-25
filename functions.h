@@ -78,6 +78,17 @@ int calculateSizeType(char *type);
 void doAritmeticOperation(value_info v1, char *operand, value_info v2, value_info *finish_val);
 
 /**
+ * Dados dos numeros y un operando relacional devuelve el resultado de la expresión
+ * "num1 op num2".
+ */
+char *doRelationalOperation(value_info element1, char *op, value_info element2);
+
+/**
+ * Dado un booleano (0/1) devuelve su contrario.
+ */
+char *negateBoolean(char *boolean);
+
+/**
  * Dados dos arrays de value_info devuelve un nuevo array con la unión de los dos anteriores.
  */
 value_info *joinElementsVectors(value_info *vec1, value_info *vec2, int numElemVec1, int numElemVec2);

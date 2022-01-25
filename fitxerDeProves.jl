@@ -14,4 +14,5 @@ function swap(v::Tensor{Int32})
  i = 1
  z = x + mean(x - 7, v[3 + i] * 3.5)
 
-    
+! 2 <= 3 && true || false
+true || false && ! 2 <= 3

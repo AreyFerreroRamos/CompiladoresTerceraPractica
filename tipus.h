@@ -20,6 +20,9 @@
 #define TENS_T "_TENS_T"
 #define LIT_T "_LIT_T"
 
+#define TRUE_VAL "true"
+#define FALSE_VAL "false"
+
 #define OP_ARIT_SUMA "+"
 #define OP_ARIT_RESTA "-"
 #define OP_ARIT_MULT "*"
@@ -33,9 +36,6 @@
 #define OP_REL_LE "<="
 #define OP_REL_EQUAL "=="
 #define OP_REL_DIFF "!="
-
-#define OP_BOOL_AND "&&"
-#define OP_BOOL_OR "||"
 
 // TIPOS DE INSTRUCCIÓN.
 

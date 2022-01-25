@@ -83,6 +83,62 @@ void floatOperations(float num1, float num2, char *operand, float *res) {
     }
 }
 
+int intRelationalOperations(int num1, char *op, int num2)
+{
+    if (strcmp(op, OP_REL_HIGH) == 0)
+    {
+        return num1 > num2;
+    }
+    if (strcmp(op, OP_REL_HE) == 0)
+    {
+        return num1 >= num2;
+    }
+    if (strcmp(op, OP_REL_LESS) == 0)
+    {
+        return num1 < num2;
+    }
+    if (strcmp(op, OP_REL_LE) == 0)
+    {
+        return num1 <= num2;
+    }
+    if (strcmp(op, OP_REL_EQUAL) == 0)
+    {
+        return num1 == num2;
+    }
+    if (strcmp(op, OP_REL_DIFF) == 0)
+    {
+        return num1 != num2;
+    }
+}
+
+int floatRelationalOperations(float num1, char *op, float num2)
+{
+    if (strcmp(op, OP_REL_HIGH) == 0)
+    {
+        return num1 > num2;
+    }
+    if (strcmp(op, OP_REL_HE) == 0)
+    {
+        return num1 >= num2;
+    }
+    if (strcmp(op, OP_REL_LESS) == 0)
+    {
+        return num1 < num2;
+    }
+    if (strcmp(op, OP_REL_LE) == 0)
+    {
+        return num1 <= num2;
+    }
+    if (strcmp(op, OP_REL_EQUAL) == 0)
+    {
+        return num1 == num2;
+    }
+    if (strcmp(op, OP_REL_DIFF) == 0)
+    {
+        return num1 != num2;
+    }
+}
+
 // FUNCIONES BASE PARA EJECUCIÓN DEL COMPILADOR
 
 int init_analisi_lexic(char *file_name) {

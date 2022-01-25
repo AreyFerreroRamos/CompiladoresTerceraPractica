@@ -37,6 +37,16 @@ void intOperations(int num1, int num2, char *op, int *res);
  */
 void floatOperations(float num1, float num2, char *op, float *res);
 
+/**
+ *
+ */
+int intRelationalOperations(int num1, char *op, int num2);
+
+/**
+ *
+ */
+int floatRelationalOperations(float num1, char *op, float num2);
+
 // FUNCIONES BASE PARA EJECUCIÓN DEL COMPILADOR
 
 int init_analisi_lexic(char *);
