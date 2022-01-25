@@ -61,6 +61,25 @@ void emet(char *type, int nArgs, ...) {
         var3 = strdup(va_arg(ap,
         char*));
         instruction = generateString("%s := %s %s %s", 4, var1, var2, type, var3);
+    } else if (isSameType(type, INSTR_EQ) || isSameType(type, INSTR_NE)
+               || isSameType(type, INSTR_GTI) || isSameType(type, INSTR_GTD)
+               || isSameType(type, INSTR_GEI) || isSameType(type, INSTR_GED)
+               || isSameType(type, INSTR_LTI) || isSameType(type, INSTR_LTD)
+               || isSameType(type, INSTR_LEI) || isSameType(type, INSTR_LED)) {
+        char *var1, *var2;
+        var1 = strdup(va_arg(ap,
+        char*));
+        var2 = strdup(va_arg(ap,
+        char*));
+        instruction = generateString("IF %s %s %s GOTO", 3, var1, type, var2);
+    } else if (isSameType(type, INSTR_BRANCH)) {
+        if (nArgs == 0) {
+            instruction = generateString("GOTO", 0);
+        }
+        else {
+            char *val = strdup(va_arg(ap, char *));
+            instruction = generateString("GOTO %s", 1, val);
+        }
     } else if (isSameType(type, INSTR_PUT)) {
         char *element = strdup(va_arg(ap,
         char *));
@@ -167,6 +186,38 @@ void classifyOperation(char *operation, value_info v1, value_info v2, value_info
     }
 }
 
+void classifyRelationalOperation(char *operation, value_info v1, value_info v2) {
+    if (isSameType(operation, OP_REL_EQUAL)) {
+        emet(INSTR_EQ, 2, v1.value, v2.value);
+    }
+    else if (isSameType(operation, OP_REL_DIFF)) {
+        emet(INSTR_NE, 2, v1.value, v2.value);
+    }
+    else {
+        if (isSameType(v1.type, INT32_T)) {
+            if (isSameType(operation, OP_REL_HIGH)) {
+                emet(INSTR_GTI, 2, v1.value, v2.value);
+            } else if (isSameType(operation, OP_REL_HE)) {
+                emet(INSTR_GEI, 2, v1.value, v2.value);
+            } else if (isSameType(operation, OP_REL_LESS)) {
+                emet(INSTR_LTI, 2, v1.value, v2.value);
+            } else if (isSameType(operation, OP_REL_LE)) {
+                emet(INSTR_LEI, 2, v1.value, v2.value);
+            }
+        } else {
+            if (isSameType(operation, OP_REL_HIGH)) {
+                emet(INSTR_GTD, 2, v1.value, v2.value);
+            } else if (isSameType(operation, OP_REL_HE)) {
+                emet(INSTR_GED, 2, v1.value, v2.value);
+            } else if (isSameType(operation, OP_REL_LESS)) {
+                emet(INSTR_LTD, 2, v1.value, v2.value);
+            } else if (isSameType(operation, OP_REL_LE)) {
+                emet(INSTR_LED, 2, v1.value, v2.value);
+            }
+        }
+    }
+}
+
 void writeLine(int line, char *instruction) {
     if (c3a == NULL) {
         c3a = malloc(sizeof(char *));
@@ -216,7 +267,7 @@ char *doRelationalOperation(value_info element1, char *op, value_info element2)
     }
     else
     {
-        res =floatRelationalOperations(atof(element1.value), op, atof(element2.value));
+        res = floatRelationalOperations(atof(element1.value), op, atof(element2.value));
     }
     if (res == 1)
     {
@@ -245,6 +296,16 @@ value_info *joinElementsVectors(value_info *vec1, value_info *vec2, int numElemV
     int cont = numElemVec1;
     for (int i = 0; i < numElemVec2; i++) {
         aux[cont++] = vec2[i];
+    }
+    return aux;
+}
+
+int *joinIntegerLists(integer_list list1,integer_list list2) {
+    int totalElem = list1.numElem + list2.numElem;
+    int *aux = realloc(list1.elements, totalElem * sizeof(value_info));
+    int cont = list1.numElem;
+    for (int i = 0; i < list2.numElem; i++) {
+        aux[cont++] = list2.elements[i];
     }
     return aux;
 }
@@ -282,6 +343,12 @@ value_info *addValueInfoBase(value_info *list, int numElem, value_info toAdd) {
         aux = realloc(list, sizeof(value_info) * (numElem + 1));
     }
     aux[numElem] = toAdd;
+    return aux;
+}
+
+int *createIntegerList(int elem) {
+    int *aux = malloc(sizeof(int));
+    aux[0] = elem;
     return aux;
 }
 
@@ -341,4 +408,12 @@ void checkIfIsNeededCast(char *expectedType, value_info *arrivedValue) {
         arrivedValue[0].value = strdup(tmp);
     }
 
+}
+
+void completa(integer_list list, int numLinea)
+{
+    for(int i=0;i<list.numElem; i++)
+    {
+        c3a[list.elements[i]] = generateString("%s %s",2,c3a[list.elements[i]], itos(numLinea));
+    }
 }

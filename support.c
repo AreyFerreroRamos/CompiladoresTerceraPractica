@@ -29,8 +29,8 @@ char *emetReturn(char *var) {
 void printCode3Adresses() {
     printf("---------------------------------\n");
     for (int i = 0; i < lengthCode; i++) {
-        printf("%s\n", c3a[i]);
-        fprintf(yyout, "%s\n", c3a[i]);
+        printf("%i : %s\n", i,c3a[i]);
+        fprintf(yyout, "%i : %s\n",i, c3a[i]);
     }
     printf("---------------------------------\n");
 }
@@ -59,9 +59,6 @@ void intOperations(int num1, int num2, char *operand, int *res) {
         } else {
             yyerror("No esta permitido dividir por 0.");
         }
-    } else if (strcmp(operand, OP_ARIT_POTENCIA) == 0) {
-        simpleDebug("Estoy en la potencia.\n", 1);
-        *res = (int) pow((double) num1, (double) num2);
     }
 }
 
@@ -78,8 +75,6 @@ void floatOperations(float num1, float num2, char *operand, float *res) {
         } else {
             yyerror("No esta permitido dividir por 0.");
         }
-    } else if (strcmp(operand, OP_ARIT_POTENCIA) == 0) {
-        *res = (float) pow((double) num1, (double) num2);
     }
 }
 

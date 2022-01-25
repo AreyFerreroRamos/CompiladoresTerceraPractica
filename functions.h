@@ -27,6 +27,11 @@ void restartNumberTmpId();
 void classifyOperation(char *operation, value_info v1, value_info v2, value_info v3);
 
 /**
+ *
+ */
+void classifyRelationalOperation(char *operation, value_info v1, value_info v2);
+
+/**
  *  Dado un tipo de instrucción el numero de argumentos y los datos necesarios para cada instruccion
  *  añade la instrucción al c3a. Los datos según la instrucción son los siguientes.
  *  INSTR_COPY -> (value_info variable,value_info valor).
@@ -94,6 +99,11 @@ char *negateBoolean(char *boolean);
 value_info *joinElementsVectors(value_info *vec1, value_info *vec2, int numElemVec1, int numElemVec2);
 
 /**
+ * Dados dos arrays (inicializados) de enteros devuelve un nuevo array con la unión de los dos anteriores.
+ */
+int *joinIntegerLists(integer_list list1,integer_list list2);
+
+/**
  * Dado un vector, se invierte el orden de los elementos que lo componen.
  */
 void invertVector(int *vector, int dim);
@@ -117,6 +127,12 @@ int getAcumElemDim(int *elem_dim, int num_dim);
 value_info *addValueInfoBase(value_info *list, int numElem, value_info toAdd);
 
 /**
+ * Dada una lista de enteros, el numero de enteros que hay y un nuevo entero a
+ * añadir reserva el espacio necesario e introduce el nuevo entero.
+ */
+int *createIntegerList(int elem);
+
+/**
  *
  */
 sym_value_type castValueInfoBaseToSymValueType(value_info v);
@@ -135,5 +151,7 @@ char *calculateNewIndex(int dim, value_info calcIndex, value_info index);
 void checkTypesInFuction(value_info *expectedParams, value_info *listParams, int numParams);
 
 void checkIfIsNeededCast(char *expectedType, value_info *arrivedValue);
+
+void completa(integer_list list,int numLinea);
 
 #endif

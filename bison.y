@@ -43,6 +43,7 @@
 	char *cadena;
 	ident ident;
 	value_info valueInfo;
+	boolean_info booleanInfo;
 	tensor_info tensorInfo;
 	tensor_ini_info tensorIniInfo;
 	func_param_info funcParamInfo;
@@ -58,12 +59,14 @@
 %token <ident> ID ID_FUNC ID_ACC
 %token <valueInfo> ID_ARIT
 
+%type <enter> m
 %type <tensorInfo> id lista_indices lista_indices_arit
 %type <tensorIniInfo> tensor componente lista_componentes lista_valores
 %type <cadena> op_arit_p1
 %type <funcParamInfo> cabecera_procedimiento cabecera_funcion cabecera_accion lista_params
 %type <elementsList> lista_args
-%type <valueInfo> param expresion_aritmetica lista_sumas lista_productos expresion_booleana lista_or lista_and expresion_booleana_base expresion_relacional terminal_aritmetico terminal_booleano id_arit funcion
+%type <valueInfo> param expresion_aritmetica lista_sumas lista_productos terminal_aritmetico id_arit funcion
+%type <booleanInfo> expresion_booleana lista_or lista_and expresion_booleana_base expresion_relacional terminal_booleano
 
 %start programa
 
@@ -103,9 +106,7 @@ sentencia : asignacion
 	| expresion_aritmetica	{
 					emet(INSTR_PUT, 1, $1.value);
 				}
-	| expresion_booleana	{
-					printf("\n%s\t%s\n", $1.value, $1.type);
-				}
+	| expresion_booleana
 	| ID	{
 			emet(INSTR_PUT, 1, $1.lexema);
 		}
@@ -363,36 +364,32 @@ expresion_booleana : lista_or	{
 					$$ = $1;
 				}
 
-lista_or : lista_or OP_BOOL_OR lista_and	{
-							if (isSameType($1.value, TRUE_VAL) || isSameType($3.value, TRUE_VAL))
-							{
-								$$ = createValueInfo(TRUE_VAL, BOOLEAN_T, LIT_T);
-							}
-							else
-							{
-								$$ = createValueInfo(FALSE_VAL, BOOLEAN_T, LIT_T);
-							}
+lista_or : lista_or OP_BOOL_OR m lista_and	{
+							completa($1.listaFalsos, $3);
+							$$.listaCiertos.elements = joinIntegerLists($1.listaCiertos, $4.listaCiertos);
+							$$.listaCiertos.numElem = $1.listaCiertos.numElem + $4.listaCiertos.numElem;
+							$$.listaFalsos.elements = $4.listaFalsos.elements;
+							$$.listaFalsos.numElem = $4.listaFalsos.numElem;
 						}
 	| lista_and	{
 				$$ = $1;
 			}
 
-lista_and : lista_and OP_BOOL_AND expresion_booleana_base	{
-								if (isSameType($1.value, FALSE_VAL) || isSameType($3.value, FALSE_VAL))
-								{
-									$$ = createValueInfo(FALSE_VAL, BOOLEAN_T, LIT_T);
+lista_and : lista_and OP_BOOL_AND m expresion_booleana_base	{
+									completa($1.listaCiertos, $3);
+									$$.listaCiertos.elements = $4.listaCiertos.elements;
+									$$.listaCiertos.numElem = $4.listaCiertos.numElem;
+									$$.listaFalsos.elements = joinIntegerLists($1.listaFalsos, $4.listaFalsos);
+									$$.listaFalsos.numElem = $1.listaFalsos.numElem + $4.listaFalsos.numElem;
+
 								}
-								else
-								{
-									$$ = createValueInfo(TRUE_VAL, BOOLEAN_T, LIT_T);
-								}
-							}
 			| expresion_booleana_base	{
 								$$ = $1;
 							}
 
 expresion_booleana_base : NEGACION expresion_relacional	{
-								$$ = createValueInfo(negateBoolean($2.value), BOOLEAN_T, LIT_T);
+								$$.listaCiertos = $2.listaFalsos;
+								$$.listaFalsos = $2.listaCiertos;
 							}
 			| expresion_relacional	{
 							$$ = $1;
@@ -401,7 +398,12 @@ expresion_booleana_base : NEGACION expresion_relacional	{
 expresion_relacional : lista_sumas OP_RELACIONAL lista_sumas	{
 									if (isSameType($1.type, $3.type))
 									{
-										$$ = createValueInfo(doRelationalOperation($1, $2, $3), BOOLEAN_T, LIT_T);
+										$$.listaCiertos.elements = createIntegerList(sq);
+										$$.listaCiertos.numElem = 1;
+										$$.listaFalsos.elements = createIntegerList(sq + 1);
+										$$.listaFalsos.numElem = 1;
+										classifyRelationalOperation($2, $1, $3);
+										emet(INSTR_BRANCH, 0);
 									}
 									else
 									{
@@ -412,8 +414,26 @@ expresion_relacional : lista_sumas OP_RELACIONAL lista_sumas	{
 							$$ = $1;
 						}
 
+m :	{
+		$$ = sq;
+	}
+
 terminal_booleano : BOOLEAN	{
-					$$ = createValueInfo($1, BOOLEAN_T, LIT_T);
+					if(isSameType($1,TRUE_VAL))
+					{
+						$$.listaCiertos.elements = createIntegerList(sq);
+						$$.listaCiertos.numElem = 1;
+						$$.listaFalsos.elements = NULL;
+						$$.listaFalsos.numElem = 0;
+					}
+					else
+					{
+						$$.listaCiertos.elements = NULL;
+						$$.listaCiertos.numElem = 0;
+						$$.listaFalsos.elements = createIntegerList(sq);
+						$$.listaFalsos.numElem = 1;
+					}
+					emet(INSTR_BRANCH,0);
 				}
 		| PARENTESIS_ABIERTO expresion_booleana PARENTESIS_CERRADO	{
 											$$ = $2;

@@ -12,7 +12,6 @@
 #define INT32_T "Int32"
 #define FLOAT64_T "Float64"
 #define BOOLEAN_T "Bool"
-#define STRING_T "String"
 #define TENSOR_T "Tensor"
 
 #define FUNC_T "_FUNC_T"
@@ -28,7 +27,6 @@
 #define OP_ARIT_MULT "*"
 #define OP_ARIT_DIV "/"
 #define OP_ARIT_MOD "%"
-#define OP_ARIT_POTENCIA "^"
 
 #define OP_REL_HIGH ">"
 #define OP_REL_LESS "<"
@@ -41,6 +39,7 @@
 
 #define INSTR_START "START"
 #define INSTR_END "END"
+
 #define INSTR_ADDI "ADDI"
 #define INSTR_ADDD "ADDD"
 #define INSTR_SUBI "SUBI"
@@ -52,6 +51,18 @@
 #define INSTR_MODI "MODI"
 #define INSTR_I2D "I2D"
 #define INSTR_D2I "D2I"
+
+#define INSTR_EQ "EQ"
+#define INSTR_NE "NE"
+#define INSTR_GTI "GTI"
+#define INSTR_GTD "GTD"
+#define INSTR_GEI "GEI"
+#define INSTR_GED "GED"
+#define INSTR_LTI "LTI"
+#define INSTR_LTD "LTD"
+#define INSTR_LEI "LEI"
+#define INSTR_LED "LED"
+
 #define INSTR_COPY "COPY"       // Se asigna el contenido de una variable a otra variable.
 #define INSTR_COPY_TO_TENSOR "COPY2TENSOR"              // t[] = var
 #define INSTR_COPY_FROM_TENSOR "COPYFROMTENSOR"         // var = t[]
@@ -62,6 +73,8 @@
 #define INSTR_PUT "PUT"
 #define INSTR_HALT "HALT"
 #define INSTR_RETURN "RETURN"
+#define INSTR_IF "IF"
+#define INSTR_BRANCH "GOTO"
 
 /**
  * Esta estructura contiene los campos necesarios para gestionar un ID
@@ -96,6 +109,22 @@ typedef struct {
     value_info *elements;    // Lista de variables o argumentos.
     int numElem;             // Número de variables o argumentos.
 } elements_list;
+
+/**
+ *
+ */
+typedef struct {
+    int *elements;    // Lista de variables o argumentos.
+    int numElem;      // Número de variables o argumentos.
+} integer_list;
+
+/**
+ *
+ */
+typedef struct {
+    integer_list listaCiertos;
+    integer_list listaFalsos;
+} boolean_info;
 
 /**
  * Esta estructura contiene los campos necesarios para gestionar un tensor elemento a elemento
