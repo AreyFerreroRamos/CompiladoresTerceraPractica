@@ -40,7 +40,7 @@ $(SRCY) : $(EYACC)
 	$(YACC) $(YFLAGS) $<
 
 clean : 
-	rm -f *~ $(BIN) $(OBJ) $(SRCL) $(SRCY) $(OTHERS) $(EXIT_FILE)
+	rm -f *~ $(BIN).exe $(OBJ) $(SRCL) $(SRCY) $(OTHERS) $(EXIT_FILE)
 
 run : 
 	./$(BIN).exe $(TEST_FILE) $(EXIT_FILE)

@@ -387,6 +387,10 @@ lista_and : lista_and OP_BOOL_AND m expresion_booleana_base	{
 								$$ = $1;
 							}
 
+m :	{
+		$$ = sq;
+	}
+
 expresion_booleana_base : NEGACION expresion_relacional	{
 								$$.listaCiertos = $2.listaFalsos;
 								$$.listaFalsos = $2.listaCiertos;
@@ -413,10 +417,6 @@ expresion_relacional : lista_sumas OP_RELACIONAL lista_sumas	{
 			| terminal_booleano	{
 							$$ = $1;
 						}
-
-m :	{
-		$$ = sq;
-	}
 
 terminal_booleano : BOOLEAN	{
 					if(isSameType($1,TRUE_VAL))
