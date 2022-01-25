@@ -247,9 +247,10 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
             {
                 yyerror(generateString("ID -> %s demasiado largo.", 1, yytext));
             }
-            if(inFunction == false && inMain ==false){
+            if (inFunction == false && inMain == false)
+            {
                 emet(INSTR_START, 1, "main");
-                inMain=true;
+                inMain = true;
             }
             sym_value_type entry;
             int response = getEntryMessage(yytext, &entry);
