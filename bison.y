@@ -168,29 +168,28 @@ if : IF expresion_booleana m lista_de_sentencias	{
 								completa($2.listaCiertos, $3);
 								$$ = joinIntegerLists($2.listaFalsos, $4);
 							}
-
 	| IF expresion_booleana m lista_de_sentencias n ELSE m lista_de_sentencias	{
 												completa($2.listaCiertos, $3);
 												completa($2.listaFalsos, $7);
 												$$ = joinIntegerLists($4, joinIntegerLists($5, $8));
 											}
 	| IF expresion_booleana m lista_de_sentencias n m elseif	{
-									completa($2.listaCiertos, $3);
-									completa($2.listaFalsos, $6);
-									$$ = joinIntegerLists(joinIntegerLists($4,$5), joinIntegerLists($7.listaFalsos, $7.listaSiguientes));
-								}
+										completa($2.listaCiertos, $3);
+										completa($2.listaFalsos, $6);
+										$$ = joinIntegerLists(joinIntegerLists($4, $5), joinIntegerLists($7.listaFalsos, $7.listaSiguientes));
+									}
 	| IF expresion_booleana m lista_de_sentencias n m elseif n ELSE m lista_de_sentencias	{
 													completa($2.listaCiertos, $3);
                                                                                                         completa($2.listaFalsos, $6);
                                                                                                         completa($7.listaFalsos, $10);
-                                                                                                        $$ = joinIntegerLists(joinIntegerLists($4,$5), joinIntegerLists($7.listaSiguientes, joinIntegerLists($8, $11)));
+                                                                                                        $$ = joinIntegerLists(joinIntegerLists($4, $5), joinIntegerLists($7.listaSiguientes, joinIntegerLists($8, $11)));
                                                                                                 }
 
 elseif : elseif n ELSEIF m expresion_booleana m lista_de_sentencias	{
 										completa($1.listaFalsos, $4);
 										completa($5.listaCiertos, $6);
 										$$.listaFalsos = $5.listaFalsos;
-										$$.listaSiguientes = joinIntegerLists($1.listaSiguientes,joinIntegerLists($2, $7));
+										$$.listaSiguientes = joinIntegerLists($1.listaSiguientes, joinIntegerLists($2, $7));
 									}
 	| ELSEIF expresion_booleana m lista_de_sentencias	{
 									completa($2.listaCiertos, $3);
@@ -206,6 +205,12 @@ for : for_ini IN rango	{
 				$$.nextList.elements = createIntegerList(sq);
 				$$.nextList.numElem = 1;
 				emet(INSTR_BRANCH, 0);
+			}
+
+for_ini : FOR ID	{
+				char *idFor = generateTmpId();
+				emet(INSTR_COPY, 2, idFor, $2.lexema);
+				$$ = idFor;
 			}
 
 rango : expresion_aritmetica DOS_PUNTOS expresion_aritmetica	{
@@ -232,12 +237,6 @@ rango : expresion_aritmetica DOS_PUNTOS expresion_aritmetica	{
 														yyerror("Los valores del rango deben ser enteros.");
 													}
                                                                                               	}
-
-for_ini : FOR ID	{
-				char *idFor = generateTmpId();
-				emet(INSTR_COPY, 2, idFor, $2.lexema);
-				$$ = idFor;
-			}
 
 asignacion : ID ASSIGN expresion_aritmetica	{
 							sym_value_type entry;
