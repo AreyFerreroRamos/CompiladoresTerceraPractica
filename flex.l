@@ -34,6 +34,9 @@
   /* CONTROL CALL FUNCTION */
   bool isFunctionCall = false;
   int numParenthesis = 0;
+
+  /* CONTROL IN FLOW CONTROL */
+  bool inFlowControl = false;
 %}
 
 %option yylineno
@@ -209,11 +212,13 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 
 "if"    {
             debug("%s\n", yytext, 0);
+            inFlowControl = true;
             return IF;
         }
 
 "elseif"    {
                 debug("%s\n", yytext, 0);
+                inFlowControl = true;
                 return ELSEIF;
             }
 
@@ -224,6 +229,7 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 
 "while" {
             debug("%s\n", yytext, 0);
+            inFlowControl = true;
             return WHILE;
         }
 
@@ -234,6 +240,7 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 
 "in"    {
             debug("%s\n", yytext, 0);
+            inFlowControl = true;
             return IN;
         }
 
@@ -303,7 +310,7 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
             }
             else
             {
-                if (assignFounded == false && corcheteOpenFounded == false && isReturnLine == false && isFunctionCall == false && (inFunction == false || (inFunction == true && idProcReaded == true)))
+                if (!assignFounded && !corcheteOpenFounded && !isReturnLine && !isFunctionCall && !inFlowControl && (!inFunction || (inFunction && idProcReaded)) )
                 {
                     debug("ID POINTER: %s\n", yytext, 0);
                     yylval.ident.lexema = strdup(yytext);
@@ -335,6 +342,7 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 		assignFounded = false;
 		corcheteOpenFounded = false;
 		isReturnLine = false;
+        inFlowControl = false;
 	}
 
 .	{}

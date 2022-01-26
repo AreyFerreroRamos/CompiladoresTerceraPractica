@@ -14,7 +14,7 @@ function swap(v::Tensor{Int32})
  i = 1
  z = x + mean(x - 7, v[3 + i] * 3.5)
 
-while 2 < 3 || 2 == 2 && 3 > 4
+while i < 3 || 2 == 2 && 3 > i
     3 + 4
 end
 
@@ -22,19 +22,19 @@ for var in 1:5
     3 + 4
 end
 
-for var in 1:2:7
+for var in 1:i:7
     3 + 4
 end
 
-if 1>0
+if i>0
     1
-elseif (1<0)
+elseif (i<0)
     2
-elseif (1==0)
+elseif (i==0)
     3
-elseif (1>=0)
+elseif (i>=0)
     4
-elseif (1>=0)
+elseif (i>=0)
     5
 else
     6
