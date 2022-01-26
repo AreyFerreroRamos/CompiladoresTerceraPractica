@@ -145,4 +145,23 @@ typedef struct {
     elements_list elemList;
 } func_param_info;
 
+/**
+ * Esta estructura contiene los valores dentro de un rango
+ */
+typedef struct {
+    char *ini;                 // Valor inicial                   for(___; ; )
+    char *despl;               // Desplazamiento                  for( ; ;___)
+    char *fin;                 // Valor maximo                    for( ;___; )
+} rang_info;
+
+/**
+ * Esta estructura contiene toda la información para poder manejar un for en bison
+ */
+typedef struct {
+    rang_info rangInfo;
+    integer_list nextList;   // lista de siguientes
+    int sqComp;            // linea donde se hace la comparación del for
+    char *idFor;            // Variable a ser comparada         for( ;___; )
+} for_info;
+
 #endif

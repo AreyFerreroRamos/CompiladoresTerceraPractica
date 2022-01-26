@@ -189,6 +189,11 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 		return PUNTO_Y_COMA;
 	}
 
+:   {
+        debug("%s\n", yytext, 0);
+        return DOS_PUNTOS;
+    }
+
 ::  {
         debug("%s\n", yytext, 0);
         if (inFunction == true && inParams == false)
@@ -207,6 +212,15 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
             return WHILE;
         }
 
+"for"   {
+            debug("%s\n", yytext, 0);
+            return FOR;
+        }
+
+"in"    {
+            debug("%s\n", yytext, 0);
+            return IN;
+        }
 "function"  {
                 debug("%s\n", yytext, 0);
                 inFunction = true;

@@ -49,10 +49,12 @@
 	func_param_info funcParamInfo;
 	elements_list elementsList;
 	sym_value_type symValueType;
+	rang_info rangInfo;
+	for_info forInfo;
 	void *no_definit;
 }
 
-%token <no_definit> ASSIGN START VALUE_RETURN DIRECT_RETURN END DOBLE_DOS_PUNTOS LLAVE_ABIERTA LLAVE_CERRADA WHILE OP_BOOL_AND OP_BOOL_OR NEGACION
+%token <no_definit> ASSIGN START VALUE_RETURN DIRECT_RETURN END DOS_PUNTOS DOBLE_DOS_PUNTOS LLAVE_ABIERTA LLAVE_CERRADA WHILE FOR IN OP_BOOL_AND OP_BOOL_OR NEGACION
 %token <enter> INTEGER
 %token <real> FLOAT
 %token <cadena> OP_ARIT_P1 OP_ARIT_P2 ASTERISCO OP_RELACIONAL PARENTESIS_ABIERTO PARENTESIS_CERRADO DIV COMA CORCHETE_ABIERTO CORCHETE_CERRADO PUNTO_Y_COMA TIPO ID_PROC BOOLEAN
@@ -62,12 +64,14 @@
 %type <enter> m
 %type <tensorInfo> id lista_indices lista_indices_arit
 %type <tensorIniInfo> tensor componente lista_componentes lista_valores
-%type <cadena> op_arit_p1
+%type <cadena> op_arit_p1 for_ini
 %type <funcParamInfo> cabecera_procedimiento cabecera_funcion cabecera_accion lista_params
 %type <elementsList> lista_args
 %type <valueInfo> param expresion_aritmetica lista_sumas lista_productos terminal_aritmetico id_arit funcion
 %type <booleanInfo> expresion_booleana lista_or lista_and expresion_booleana_base expresion_relacional terminal_booleano
 %type <integerList> lista_de_sentencias sentencia
+%type <rangInfo> rango
+%type <forInfo> for
 
 %start programa
 
@@ -158,6 +162,50 @@ sentencia : asignacion	{
 									emet(INSTR_BRANCH, 1, $2);
 									$$ = $3.listaFalsos;
 								}
+	| for lista_de_sentencias END {
+		completa($2,sq);
+		emet(INSTR_ADDI,3,$1.idFor,$1.idFor,$1.rangInfo.despl);
+		emet(INSTR_BRANCH,1,$1.sqComp);
+		$$ = $1.nextList;
+	}
+for : for_ini IN rango {
+	$$.idFor = $1;
+	$$.sqComp = sq;
+	$$.rangInfo = $3;
+	emet(INSTR_LEI,3,$1,$3.fin,itos($$.sqComp+2));
+	$$.nextList.elements = createIntegerList(sq);
+	$$.nextList.numElem = 1;
+	emet(INSTR_BRANCH,0);
+	printf("vudshjcnas");
+	fflush(stdout);
+}
+
+rango : expresion_aritmetica DOS_PUNTOS expresion_aritmetica	{
+									if (isSameType($1.type,INT32_T) && isSameType($3.type,INT32_T))
+									{
+										$$.ini = $1.value;
+										$$.despl = "1";
+										$$.fin = $3.value;
+									}else{
+										yyerror("Los valores del rango deben ser enteros");
+									}
+								}
+	| expresion_aritmetica DOS_PUNTOS expresion_aritmetica DOS_PUNTOS expresion_aritmetica	{
+													if (isSameType($1.type,INT32_T) && isSameType($3.type,INT32_T) && isSameType($5.type,INT32_T))
+													{
+														$$.ini = $1.value;
+														$$.despl = $3.value;
+														$$.fin = $5.value;
+													}else{
+														yyerror("Los valores del rango deben ser enteros");
+													}
+                                                                                              	}
+
+for_ini : FOR ID 	{
+			char *idFor = generateTmpId();
+			emet(INSTR_COPY,2,idFor,$2.lexema);
+			$$ = idFor;
+		}
 
 asignacion : ID ASSIGN expresion_aritmetica	{
 							sym_value_type entry;
@@ -231,9 +279,6 @@ lista_indices : lista_indices COMA lista_sumas	{
 		     					}
 
 expresion_aritmetica : lista_sumas
-{
-				printf("2VALOR: %s TIPO1: %s TIPO2: %s\n",$1.value,$1.type,$1.valueInfoType);
-}
 
 lista_sumas : lista_sumas OP_ARIT_P2 lista_productos	{
 								if (isNumberType($3.type))

@@ -72,6 +72,12 @@ void emet(char *type, int nArgs, ...) {
         var2 = strdup(va_arg(ap,
         char*));
         instruction = generateString("IF %s %s %s GOTO", 3, var1, type, var2);
+        if (nArgs > 2) {
+            char *gotoNum = strdup(va_arg(ap,
+            char*));
+            instruction = generateString("%s %s", 2, instruction, gotoNum);
+
+        }
     } else if (isSameType(type, INSTR_BRANCH)) {
         if (nArgs == 0) {
             instruction = generateString("GOTO", 0);
