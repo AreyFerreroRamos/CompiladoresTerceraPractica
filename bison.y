@@ -83,6 +83,7 @@ programa : lista_de_procedimientos main | main
 lista_de_procedimientos : lista_de_procedimientos procedimiento | procedimiento
 
 procedimiento : cabecera_procedimiento lista_de_sentencias END	{
+									completa($2, sq);
 									if ($1.returnType == NULL)
 									{
 										emet(INSTR_END, 1, 1);
@@ -100,24 +101,14 @@ procedimiento : cabecera_procedimiento lista_de_sentencias END	{
 cabecera_procedimiento : cabecera_funcion | cabecera_accion
 
 main : lista_de_sentencias	{
-				    writeLine(sq, "HALT");
-				    writeLine(sq, "END");
+					completa($1, sq);
+					writeLine(sq, "HALT");
+					writeLine(sq, "END");
 				}
 
-lista_de_sentencias : lista_de_sentencias sentencia	{
-								if (($1.numElem != 0) && ($2.numElem != 0))
-								{
-									$$.elements = joinIntegerLists($1, $2);
-									$$.numElem = $1.numElem + $2.numElem;
-								}
-								else if ($1.numElem != 0)
-								{
-									$$ = $1;
-								}
-								else if ($2.numElem != 0)
-								{
-									$$ = $2;
-								}
+lista_de_sentencias : lista_de_sentencias m sentencia	{
+								completa($1, $2);
+								$$ = $3;
 							}
  		| sentencia	{
  					$$ = $1;
