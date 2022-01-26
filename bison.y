@@ -53,7 +53,7 @@
 	void *no_definit;
 }
 
-%token <no_definit> ASSIGN START VALUE_RETURN DIRECT_RETURN END DOS_PUNTOS DOBLE_DOS_PUNTOS LLAVE_ABIERTA LLAVE_CERRADA WHILE FOR IN OP_BOOL_AND OP_BOOL_OR NEGACION
+%token <no_definit> ASSIGN START VALUE_RETURN DIRECT_RETURN END DOS_PUNTOS DOBLE_DOS_PUNTOS LLAVE_ABIERTA LLAVE_CERRADA IF ELSEIF ELSE WHILE FOR IN OP_BOOL_AND OP_BOOL_OR NEGACION
 %token <enter> INTEGER
 %token <real> FLOAT
 %token <cadena> OP_ARIT_P1 OP_ARIT_P2 ASTERISCO OP_RELACIONAL PARENTESIS_ABIERTO PARENTESIS_CERRADO DIV COMA CORCHETE_ABIERTO CORCHETE_CERRADO PUNTO_Y_COMA TIPO ID_PROC BOOLEAN
@@ -65,7 +65,7 @@
 %type <tensorIniInfo> tensor componente lista_componentes lista_valores
 %type <cadena> op_arit_p1 for_ini
 %type <funcParamInfo> cabecera_procedimiento cabecera_funcion cabecera_accion lista_params
-%type <elementsList> lista_args
+%type <elementsList> lista_args if elseif
 %type <valueInfo> param expresion_aritmetica lista_sumas lista_productos terminal_aritmetico id_arit funcion
 %type <booleanInfo> expresion_booleana lista_or lista_and expresion_booleana_base expresion_relacional terminal_booleano
 %type <integerList> lista_de_sentencias sentencia
@@ -155,6 +155,9 @@ sentencia : asignacion	{
 				$$.elements = NULL;
 				$$.numElem = 0;
 			}
+	| if END	{
+
+			}
         | WHILE m expresion_booleana m lista_de_sentencias END	{
 									completa($3.listaCiertos, $4);
 									completa($5, $2);
@@ -167,6 +170,28 @@ sentencia : asignacion	{
 						emet(INSTR_BRANCH, 1, $1.sqComp);
 						$$ = $1.nextList;
 					}
+
+if : IF expresion_booleana lista_de_sentencias	{
+
+						}
+
+	| IF expresion_booleana lista_de_sentencias ELSE lista_de_sentencias	{
+
+										}
+	| IF expresion_booleana lista_de_sentencias elseif	{
+
+								}
+	| IF expresion_booleana lista_de_sentencias elseif ELSE lista_de_sentencias	{
+
+											}
+
+elseif : elseif ELSEIF lista_de_sentencias	{
+
+						}
+	| ELSEIF lista_de_sentencias	{
+
+					}
+
 for : for_ini IN rango	{
 				$$.idFor = $1;
 				$$.sqComp = sq;

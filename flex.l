@@ -207,6 +207,21 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
         return DOBLE_DOS_PUNTOS;
     }
 
+"if"    {
+            debug("%s\n", yytext, 0);
+            return IF;
+        }
+
+"elseif"    {
+                debug("%s\n", yytext, 0);
+                return ELSEIF;
+            }
+
+"else"  {
+            debug("%s\n", yytext, 0);
+            return ELSE;
+        }
+
 "while" {
             debug("%s\n", yytext, 0);
             return WHILE;
@@ -221,6 +236,7 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
             debug("%s\n", yytext, 0);
             return IN;
         }
+
 "function"  {
                 debug("%s\n", yytext, 0);
                 inFunction = true;
