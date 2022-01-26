@@ -50,6 +50,7 @@
 	sym_value_type symValueType;
 	rang_info rangInfo;
 	for_info forInfo;
+	elseif_info elseIfInfo;
 	void *no_definit;
 }
 
@@ -65,12 +66,13 @@
 %type <tensorIniInfo> tensor componente lista_componentes lista_valores
 %type <cadena> op_arit_p1 for_ini
 %type <funcParamInfo> cabecera_procedimiento cabecera_funcion cabecera_accion lista_params
-%type <elementsList> lista_args if elseif
+%type <elementsList> lista_args
 %type <valueInfo> param expresion_aritmetica lista_sumas lista_productos terminal_aritmetico id_arit funcion
 %type <booleanInfo> expresion_booleana lista_or lista_and expresion_booleana_base expresion_relacional terminal_booleano
-%type <integerList> lista_de_sentencias sentencia
+%type <integerList> lista_de_sentencias sentencia n if
 %type <rangInfo> rango
 %type <forInfo> for
+%type <elseIfInfo> elseif
 
 %start programa
 
@@ -147,7 +149,7 @@ sentencia : asignacion	{
 				$$.numElem = 0;
 			}
 	| if END	{
-
+				$$ = $1;
 			}
         | WHILE m expresion_booleana m lista_de_sentencias END	{
 									completa($3.listaCiertos, $4);
@@ -162,26 +164,39 @@ sentencia : asignacion	{
 						$$ = $1.nextList;
 					}
 
-if : IF expresion_booleana lista_de_sentencias	{
+if : IF expresion_booleana m lista_de_sentencias	{
+								completa($2.listaCiertos, $3);
+								$$ = joinIntegerLists($2.listaFalsos, $4);
+							}
 
-						}
-
-	| IF expresion_booleana lista_de_sentencias ELSE lista_de_sentencias	{
-
-										}
-	| IF expresion_booleana lista_de_sentencias elseif	{
-
-								}
-	| IF expresion_booleana lista_de_sentencias elseif ELSE lista_de_sentencias	{
-
+	| IF expresion_booleana m lista_de_sentencias n ELSE m lista_de_sentencias	{
+												completa($2.listaCiertos, $3);
+												completa($2.listaFalsos, $7);
+												$$ = joinIntegerLists($4, joinIntegerLists($5, $8));
 											}
+	| IF expresion_booleana m lista_de_sentencias n m elseif	{
+									completa($2.listaCiertos, $3);
+									completa($2.listaFalsos, $6);
+									$$ = joinIntegerLists(joinIntegerLists($4,$5), joinIntegerLists($7.listaFalsos, $7.listaSiguientes));
+								}
+	| IF expresion_booleana m lista_de_sentencias n m elseif n ELSE m lista_de_sentencias	{
+													completa($2.listaCiertos, $3);
+                                                                                                        completa($2.listaFalsos, $6);
+                                                                                                        completa($7.listaFalsos, $10);
+                                                                                                        $$ = joinIntegerLists(joinIntegerLists($4,$5), joinIntegerLists($7.listaSiguientes, joinIntegerLists($8, $11)));
+                                                                                                }
 
-elseif : elseif ELSEIF lista_de_sentencias	{
-
-						}
-	| ELSEIF lista_de_sentencias	{
-
-					}
+elseif : elseif n ELSEIF m expresion_booleana m lista_de_sentencias	{
+										completa($1.listaFalsos, $4);
+										completa($5.listaCiertos, $6);
+										$$.listaFalsos = $5.listaFalsos;
+										$$.listaSiguientes = joinIntegerLists($1.listaSiguientes,joinIntegerLists($2, $7));
+									}
+	| ELSEIF expresion_booleana m lista_de_sentencias	{
+									completa($2.listaCiertos, $3);
+									$$.listaFalsos = $2.listaFalsos;
+									$$.listaSiguientes = $4;
+								}
 
 for : for_ini IN rango	{
 				$$.idFor = $1;
@@ -469,10 +484,8 @@ expresion_booleana : lista_or	{
 
 lista_or : lista_or OP_BOOL_OR m lista_and	{
 							completa($1.listaFalsos, $3);
-							$$.listaCiertos.elements = joinIntegerLists($1.listaCiertos, $4.listaCiertos);
-							$$.listaCiertos.numElem = $1.listaCiertos.numElem + $4.listaCiertos.numElem;
-							$$.listaFalsos.elements = $4.listaFalsos.elements;
-							$$.listaFalsos.numElem = $4.listaFalsos.numElem;
+							$$.listaCiertos = joinIntegerLists($1.listaCiertos, $4.listaCiertos);
+							$$.listaFalsos = $4.listaFalsos
 						}
 	| lista_and	{
 				$$ = $1;
@@ -480,18 +493,12 @@ lista_or : lista_or OP_BOOL_OR m lista_and	{
 
 lista_and : lista_and OP_BOOL_AND m expresion_booleana_base	{
 									completa($1.listaCiertos, $3);
-									$$.listaCiertos.elements = $4.listaCiertos.elements;
-									$$.listaCiertos.numElem = $4.listaCiertos.numElem;
-									$$.listaFalsos.elements = joinIntegerLists($1.listaFalsos, $4.listaFalsos);
-									$$.listaFalsos.numElem = $1.listaFalsos.numElem + $4.listaFalsos.numElem;
+									$$.listaCiertos = $4.listaCiertos;
+									$$.listaFalsos = joinIntegerLists($1.listaFalsos, $4.listaFalsos);
 								}
 			| expresion_booleana_base	{
 								$$ = $1;
 							}
-
-m :	{
-		$$ = sq;
-	}
 
 expresion_booleana_base : NEGACION expresion_relacional	{
 								$$.listaCiertos = $2.listaFalsos;
@@ -678,6 +685,16 @@ lista_args : lista_args COMA expresion_aritmetica	{
 					$$.elements = addValueInfoBase($$.elements, $$.numElem, $1);
 					$$.numElem++;
 				}
+
+m :	{
+		$$ = sq;
+	}
+
+n :	{
+		$$.elements = createIntegerList(sq);
+		$$.numElem = 1;
+		emet(INSTR_BRANCH, 0);
+	}
 
 
 %%

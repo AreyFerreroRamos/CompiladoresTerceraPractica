@@ -306,12 +306,13 @@ value_info *joinElementsVectors(value_info *vec1, value_info *vec2, int numElemV
     return aux;
 }
 
-int *joinIntegerLists(integer_list list1, integer_list list2) {
-    int totalElem = list1.numElem + list2.numElem;
-    int *aux = realloc(list1.elements, totalElem * sizeof(value_info));
+integer_list joinIntegerLists(integer_list list1, integer_list list2) {
+    integer_list aux;
+    aux.numElem = list1.numElem + list2.numElem;
+    aux.elements = realloc(list1.elements, aux.numElem * sizeof(int));
     int cont = list1.numElem;
     for (int i = 0; i < list2.numElem; i++) {
-        aux[cont++] = list2.elements[i];
+        aux.elements[cont++] = list2.elements[i];
     }
     return aux;
 }

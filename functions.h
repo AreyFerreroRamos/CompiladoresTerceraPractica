@@ -101,7 +101,7 @@ value_info *joinElementsVectors(value_info *vec1, value_info *vec2, int numElemV
 /**
  * Dados dos arrays (inicializados) de enteros devuelve un nuevo array con la unión de los dos anteriores.
  */
-int *joinIntegerLists(integer_list list1,integer_list list2);
+integer_list joinIntegerLists(integer_list list1, integer_list list2);
 
 /**
  * Dado un vector, se invierte el orden de los elementos que lo componen.

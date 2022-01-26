@@ -164,4 +164,10 @@ typedef struct {
     char *idFor;            // Variable a ser comparada         for( ;___; )
 } for_info;
 
+typedef struct
+{
+  integer_list listaFalsos;
+  integer_list listaSiguientes;
+} elseif_info;
+
 #endif

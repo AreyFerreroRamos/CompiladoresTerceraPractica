@@ -25,3 +25,17 @@ end
 for var in 1:2:7
     3 + 4
 end
+
+if 1>0
+    1
+elseif (1<0)
+    2
+elseif (1==0)
+    3
+elseif (1>=0)
+    4
+elseif (1>=0)
+    5
+else
+    6
+end
