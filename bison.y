@@ -25,7 +25,6 @@
   int sq = 0;
   int lengthCode = 0;
   char **c3a;
-
 %}
 
 %code requires
@@ -162,50 +161,52 @@ sentencia : asignacion	{
 									emet(INSTR_BRANCH, 1, $2);
 									$$ = $3.listaFalsos;
 								}
-	| for lista_de_sentencias END {
-		completa($2,sq);
-		emet(INSTR_ADDI,3,$1.idFor,$1.idFor,$1.rangInfo.despl);
-		emet(INSTR_BRANCH,1,$1.sqComp);
-		$$ = $1.nextList;
-	}
-for : for_ini IN rango {
-	$$.idFor = $1;
-	$$.sqComp = sq;
-	$$.rangInfo = $3;
-	emet(INSTR_LEI,3,$1,$3.fin,itos($$.sqComp+2));
-	$$.nextList.elements = createIntegerList(sq);
-	$$.nextList.numElem = 1;
-	emet(INSTR_BRANCH,0);
-	printf("vudshjcnas");
-	fflush(stdout);
-}
+	| for lista_de_sentencias END	{
+						completa($2, sq);
+						emet(INSTR_ADDI, 3, $1.idFor, $1.idFor, $1.rangInfo.despl);
+						emet(INSTR_BRANCH, 1, $1.sqComp);
+						$$ = $1.nextList;
+					}
+for : for_ini IN rango	{
+				$$.idFor = $1;
+				$$.sqComp = sq;
+				$$.rangInfo = $3;
+				emet(INSTR_LEI, 3, $1, $3.fin, itos($$.sqComp + 2));
+				$$.nextList.elements = createIntegerList(sq);
+				$$.nextList.numElem = 1;
+				emet(INSTR_BRANCH, 0);
+			}
 
 rango : expresion_aritmetica DOS_PUNTOS expresion_aritmetica	{
-									if (isSameType($1.type,INT32_T) && isSameType($3.type,INT32_T))
+									if (isSameType($1.type, INT32_T) && isSameType($3.type, INT32_T))
 									{
 										$$.ini = $1.value;
 										$$.despl = "1";
 										$$.fin = $3.value;
-									}else{
-										yyerror("Los valores del rango deben ser enteros");
+									}
+									else
+									{
+										yyerror("Los valores del rango deben ser enteros.");
 									}
 								}
 	| expresion_aritmetica DOS_PUNTOS expresion_aritmetica DOS_PUNTOS expresion_aritmetica	{
-													if (isSameType($1.type,INT32_T) && isSameType($3.type,INT32_T) && isSameType($5.type,INT32_T))
+													if (isSameType($1.type, INT32_T) && isSameType($3.type, INT32_T) && isSameType($5.type, INT32_T))
 													{
 														$$.ini = $1.value;
 														$$.despl = $3.value;
 														$$.fin = $5.value;
-													}else{
-														yyerror("Los valores del rango deben ser enteros");
+													}
+													else
+													{
+														yyerror("Los valores del rango deben ser enteros.");
 													}
                                                                                               	}
 
-for_ini : FOR ID 	{
-			char *idFor = generateTmpId();
-			emet(INSTR_COPY,2,idFor,$2.lexema);
-			$$ = idFor;
-		}
+for_ini : FOR ID	{
+				char *idFor = generateTmpId();
+				emet(INSTR_COPY, 2, idFor, $2.lexema);
+				$$ = idFor;
+			}
 
 asignacion : ID ASSIGN expresion_aritmetica	{
 							sym_value_type entry;
