@@ -1,41 +1,14 @@
-function swap(v::Tensor{Int32})
- temp = v[1]
- v[1] = v[2]
- v[2] = temp
- end
-
- function mean(a::Float64, b::Float64)::Float64
- return (a + b) / 2
- end
-
- v = [1, 2, 3, 4]
- swap(v)
- x = 10.0 + 7.0
- i = 1
- z = x + mean(x - 7, v[3 + i] * 3.5)
-
-while i < 3 || 2 == 2 && 3 > i
-    3 + 4
+i = 1
+total = (1.0 + 2 * 3) - i
+while total < 1000.0
+    if i % 2 == 1
+        total = total * 2
+    else
+        total = total + 1
+    end
+    #j = -i
+    if total > 666.6 || total == 500.0
+        i = i + 1
+    end
 end
-
-for var in 1:5
-    3 + 4
-end
-
-for var in 1:i:7
-    3 + 4
-end
-
-if i>0
-    1
-elseif (i<0)
-    2
-elseif (i==0)
-    3
-elseif (i>=0)
-    4
-elseif (i>=0)
-    5
-else
-    6
-end
+total

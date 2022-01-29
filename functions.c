@@ -90,6 +90,12 @@ void emet(char *type, int nArgs, ...) {
         char *element = strdup(va_arg(ap,
         char *));
         instruction = generateString("PUT %s", 1, element);
+        char *type = strdup(va_arg(ap,
+        char *));
+        emet(INSTR_PARAM, 1, element);
+        char *instr = isSameType(type, INT32_T) ? "PUTI" : "PUTD";
+        emet(INSTR_CALL, 2, instr, 1);
+        return;
     } else if (isSameType(type, INSTR_START)) {
         char *func = strdup(va_arg(ap,
         char *));
