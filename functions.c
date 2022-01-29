@@ -167,8 +167,6 @@ void classifyOperation(char *operation, value_info v1, value_info v2, value_info
         if (isSameType(operation, OP_ARIT_SUMA)) {
             emet(INSTR_ADDI, 3, v1.value, v2.value, v3.value);
         } else if (isSameType(operation, OP_ARIT_RESTA)) {
-            printf("%s, %s, %s\n", v1.value, v2.value, v3.value);
-            fflush(stdout);
             emet(INSTR_SUBI, 3, v1.value, v2.value, v3.value);
         } else if (isSameType(operation, OP_ARIT_MULT)) {
             emet(INSTR_MULI, 3, v1.value, v2.value, v3.value);

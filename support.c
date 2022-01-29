@@ -29,8 +29,8 @@ char *emetReturn(char *var) {
 void printCode3Adresses() {
     printf("---------------------------------\n");
     for (int i = 0; i < lengthCode; i++) {
-        printf("%i : %s\n", i,c3a[i]);
-        fprintf(yyout, "%i : %s\n",i, c3a[i]);
+        printf("%i\t%s\n", i, c3a[i]);
+        fprintf(yyout, "%i\t%s\n", i, c3a[i]);
     }
     printf("---------------------------------\n");
 }

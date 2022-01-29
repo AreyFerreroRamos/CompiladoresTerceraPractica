@@ -77,12 +77,6 @@ char *ftos(float num);
 char *allocateSpaceForMessage();
 
 /**
- * Función que hace un printf del texto pasado con una variable como parametro.
- * typeFile identificara si pertenece a flex (0) o bison/funciones (1).
- */
-void debug(char *text, char *var, int typeFile);
-
-/**
  * Función que hace un printf del texto pasado.
  * typeFile identificara si pertenece a flex (0) o bison/funciones (1).
  */

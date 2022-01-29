@@ -484,7 +484,7 @@ expresion_booleana : lista_or	{
 lista_or : lista_or OP_BOOL_OR m lista_and	{
 							completa($1.listaFalsos, $3);
 							$$.listaCiertos = joinIntegerLists($1.listaCiertos, $4.listaCiertos);
-							$$.listaFalsos = $4.listaFalsos
+							$$.listaFalsos = $4.listaFalsos;
 						}
 	| lista_and	{
 				$$ = $1;

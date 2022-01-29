@@ -50,77 +50,87 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 %%
 
 
+\n	{
+		simpleDebug("\n\n", 0);
+		assignFounded = false;
+		corcheteOpenFounded = false;
+		isReturnLine = false;
+        inFlowControl = false;
+	}
+
 ({digit})+  {
                 if(inFunction == false && inMain ==false){
+                    simpleDebug("START MAIN\n\n",0);
                     emet(INSTR_START, 1, "main");
                     inMain=true;
                 }
-                debug("%s\n", yytext, 0);
+                simpleDebug("INTEGER ",0);
                 yylval.enter = atoi(yytext);
                 return INTEGER;
             }
 
 ({digit})+"."({digit})+(e(-)?({digit})+)?   {
                                                 if(inFunction == false && inMain ==false){
+                                                    simpleDebug("START MAIN\n\n",0);
                                                     emet(INSTR_START, 1, "main");
                                                     inMain=true;
                                                 }
-                                                debug("%s\n", yytext, 0);
+                                                simpleDebug("FLOAT ",0);
                                                 yylval.real = atof(yytext);
                                                 return FLOAT;
                                             }
 
 (true|false)	{
-                    debug("%s\n", yytext, 0);
+                    simpleDebug("BOOLEAN ",0);
                     yylval.cadena = strdup(yytext);
                     return BOOLEAN;
                 }
 
 (#(.)*|#=(.|\n)*=#) {
-                        debug("COMMENT: %s\n", yytext, 0);
+                        simpleDebug("COMMENT ",0);
                     }
 
 ("/"|"%")   {
-                debug("%s\n", yytext, 0);
+                simpleDebug("OP_ARIT_P1 ",0);
                 yylval.cadena = strdup(yytext);
                 return OP_ARIT_P1;
             }
 
 "*" {
-		debug("%s\n", yytext, 0);
+		simpleDebug("ASTERISCO ",0);
 		yylval.cadena = strdup(yytext);
 		return ASTERISCO;
 	}
 
 ("+"|"-")   {
-                debug("%s\n", yytext, 0);
+                simpleDebug("OP_ARIT_P2 ",0);
                 yylval.cadena = strdup(yytext);
                 return OP_ARIT_P2;
             }
 
 (">"|">="|"=="|"<="|"<"|"!=")	{
-                                    debug("%s\n", yytext, 0);
+                                    simpleDebug("OP_RELACIONAL ",0);
                                     yylval.cadena = strdup(yytext);
                                     return OP_RELACIONAL;
                                 }
 
 "!"	{
-		debug("%s\n", yytext, 0);
+        simpleDebug("NEGACION ",0);
 		return NEGACION;
 	}
 
 &&  {
-        debug("%s\n", yytext, 0);
+        simpleDebug("OP_BOOL_AND ",0);
         return OP_BOOL_AND;
     }
 
 "||"    {
-            debug("%s\n", yytext, 0);
+            simpleDebug("OP_BOOL_OR ",0);
             return OP_BOOL_OR;
         }
 
 "(" {
-        debug("%s\n", yytext, 0);
+        simpleDebug("PARENTESIS_ABIERTO ",0);
         if (inHeader == true)
         {
             inParams = true;
@@ -133,7 +143,7 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 	}
 
 ")" {
-        debug("%s\n", yytext, 0);
+        simpleDebug("PARENTESIS_CERRADO ",0);
         if (inHeader == true)
         {
             inHeader = false;
@@ -151,54 +161,54 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 	}
 
 ,	{
-		debug("%s\n", yytext, 0);
+		simpleDebug("COMA ",0);
 		return COMA;
 	}
 
 "div("  {
-            debug("%s\n", yytext, 0);
+            simpleDebug("DIV ",0);
             return DIV;
         }
 
 "=" {
-		debug("%s\n", yytext, 0);
+		simpleDebug("ASSIGN ",0);
 		assignFounded = true;
 		return ASSIGN;
 	}
 
 "["	{
-		debug("%s\n", yytext, 0);
+		simpleDebug("CORCHETE_ABIERTO ",0);
 		corcheteOpenFounded = true;
 		return CORCHETE_ABIERTO;
 	}
 
 "]"	{
-		debug("%s\n", yytext, 0);
+		simpleDebug("CORCHETE_CERRADO ",0);
 		return CORCHETE_CERRADO;
 	}
 
 "{" {
-        debug("%s\n", yytext, 0);
+        simpleDebug("LLAVE_ABIERTA ",0);
         return LLAVE_ABIERTA;
     }
 
 "}" {
-        debug("%s\n", yytext, 0);
+        simpleDebug("LLAVE_CERRADA ",0);
         return LLAVE_CERRADA;
     }
 
 ;   {
-		debug("%s\n", yytext, 0);
+		simpleDebug("PUNTO_Y_COMA ",0);
 		return PUNTO_Y_COMA;
 	}
 
 :   {
-        debug("%s\n", yytext, 0);
+        simpleDebug("DOS_PUNTOS ",0);
         return DOS_PUNTOS;
     }
 
 ::  {
-        debug("%s\n", yytext, 0);
+        simpleDebug("DOBLE_DOS_PUNTOS ",0);
         if (inFunction == true && inParams == false)
         {
             isAction = false;
@@ -211,41 +221,41 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
     }
 
 "if"    {
-            debug("%s\n", yytext, 0);
+            simpleDebug("IF ",0);
             inFlowControl = true;
             return IF;
         }
 
 "elseif"    {
-                debug("%s\n", yytext, 0);
+                simpleDebug("ELSEIF ",0);
                 inFlowControl = true;
                 return ELSEIF;
             }
 
 "else"  {
-            debug("%s\n", yytext, 0);
+            simpleDebug("ELSE ",0);
             return ELSE;
         }
 
 "while" {
-            debug("%s\n", yytext, 0);
+            simpleDebug("WHILE ",0);
             inFlowControl = true;
             return WHILE;
         }
 
 "for"   {
-            debug("%s\n", yytext, 0);
+            simpleDebug("FOR ",0);
             return FOR;
         }
 
 "in"    {
-            debug("%s\n", yytext, 0);
+            simpleDebug("IN ",0);
             inFlowControl = true;
             return IN;
         }
 
 "function"  {
-                debug("%s\n", yytext, 0);
+                simpleDebug("START ",0);
                 inFunction = true;
                 inHeader = true;
                 pushSymtab();
@@ -256,25 +266,25 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 		        isReturnLine = true;
                 if (isAction == true)
                 {
-                    debug("%s\n", yytext, 0);
+                    simpleDebug("DIRECT_RETURN ",0);
                     return DIRECT_RETURN;
                 }
                 else
                 {
-                    debug("%s with action\n", yytext, 0);
+                    simpleDebug("VALUE_RETURN ",0);
                     return VALUE_RETURN;
                 }
             }
 
 "end"	{
-            debug("%s\n", yytext, 0);
+            simpleDebug("END ",0);
             inFunction = false;
             idProcReaded = false;
             return END;
         }
 
 ("Int32"|"Float64"|"String"|"Bool"|"Tensor")    {
-                                                    debug("%s\n", yytext, 0);
+                                                    simpleDebug("TIPO ",0);
                                                     yylval.cadena = strdup(yytext);
                                                     return TIPO;
                                                 }
@@ -286,6 +296,7 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
             }
             if (inFunction == false && inMain == false)
             {
+                simpleDebug("START MAIN\n\n",0);
                 emet(INSTR_START, 1, "main");
                 inMain = true;
             }
@@ -299,12 +310,12 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
                 yylval.ident.line = yylineno;
                 if (entry.type == NULL)
                 {
-                    debug("ID ACC: %s\n", yytext, 0);
+                    simpleDebug("ID_ACC ",0);
                     return ID_ACC;
                 }
                 else
                 {
-                    debug("ID FUNC: %s\n", yytext, 0);
+                    simpleDebug("ID_FUNC ",0);
                     return ID_FUNC;
                 }
             }
@@ -312,7 +323,7 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
             {
                 if (!assignFounded && !corcheteOpenFounded && !isReturnLine && !isFunctionCall && !inFlowControl && (!inFunction || (inFunction && idProcReaded)) )
                 {
-                    debug("ID POINTER: %s\n", yytext, 0);
+                    simpleDebug("ID ",0);
                     yylval.ident.lexema = strdup(yytext);
                     yylval.ident.length = strlen(yytext);
                     yylval.ident.line = yylineno;
@@ -320,14 +331,14 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
                 }
                 else if (inHeader == true && idProcReaded == false)
                 {
-                    debug("ID PROC: %s\n", yytext, 0);
+                    simpleDebug("ID_PROC ",0);
                     yylval.cadena = strdup(yytext);
                     idProcReaded = true;
                     return ID_PROC;
                 }
                 else
                 {
-                    debug("ID ARIT: %s\n", yytext, 0);
+                    simpleDebug("ID_ARIT ",0);
                     if (isSameType(entry.type, INT32_T) || isSameType(entry.type, FLOAT64_T))
                     {
                         yylval.valueInfo = createValueInfo(yytext, entry.type, entry.entryType);
@@ -337,13 +348,6 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
             }
         }
 
-\n	{
-		debug("%s\n", yytext, 0);
-		assignFounded = false;
-		corcheteOpenFounded = false;
-		isReturnLine = false;
-        inFlowControl = false;
-	}
 
 .	{}
 

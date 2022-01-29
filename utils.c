@@ -138,21 +138,10 @@ char *allocateSpaceForMessage() {
     return message;
 }
 
-void debug(char *text, char *var, int typeFile) {
-    // flex
-    if (typeFile == 0) {
-        printf(text, var);
-    }
-        // bison
-    else {
-        // printf(text, var);
-    }
-}
-
 void simpleDebug(char *text, int typeFile) {
     // flex
     if (typeFile == 0) {
-        // printf(text);
+         printf(text);
     }
         // bison
     else {
