@@ -14,12 +14,12 @@
   extern int yylex();
   extern void yyerror(char *);
 
-  	// Variables necesarias para la inicialización de un tensor.
+  	/* Variables necesarias para la inicialización de un tensor. */
   int *vector_dims_tensor;	// Vector con el número de elementos de cada dimensión del tensor.
   int num_dims_tensor = 0;	// Número de dimensiones del tensor.
   bool *ampliar_vector_dims; 	// Vector de booleanos para limitar la ampliación de memoria del vector de dimensiones a una sola ampliación por dimensión.
 
-	//Variables para controlar el flujo de variables temporales en la symtab.
+	/* Variables para controlar el flujo de variables temporales en la symtab. */
   char **list_tmp_variables_symtab;
   int num_tmp_variable = 1;
   int sq = 0;
@@ -39,7 +39,7 @@
 	int enter;
 	float real;
 	char *cadena;
-	ident ident;
+	ident_info identInfo;
 	value_info valueInfo;
 	boolean_info booleanInfo;
 	integer_list integerList;
@@ -58,7 +58,7 @@
 %token <enter> INTEGER
 %token <real> FLOAT
 %token <cadena> OP_ARIT_P1 OP_ARIT_P2 ASTERISCO OP_RELACIONAL PARENTESIS_ABIERTO PARENTESIS_CERRADO COMA CORCHETE_ABIERTO CORCHETE_CERRADO PUNTO_Y_COMA TIPO ID_PROC BOOLEAN
-%token <ident> ID ID_FUNC ID_ACC
+%token <identInfo> ID ID_FUNC ID_ACC
 %token <valueInfo> ID_ARIT
 
 %type <enter> m

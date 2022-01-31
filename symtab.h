@@ -10,12 +10,14 @@
 /****************************************************************************/
 
 /* The type of the value field of symbol table entries                      */
-/*typedef void * sym_value_type;*/ /* you will need to replace this  */
+/* typedef void * sym_value_type; */ /* you will need to replace this  */
 /* with a declaration appropriate   */
 /* for your application.            */
 /* Ho subtituim per un unio o struct*/
 /* segons ens convingui.            */
-typedef struct sym_value_type {
+
+typedef struct sym_value_type
+{
     void *type;         /* Tipo de variable. En caso de que sea FUNC_T sera el tipo de retorno, si es accion estará inicializada a NULL. */
     int size;           /* Tamaño del elemento en bytes o en caso de una FUNC_T el número de elementos. */
     int num_dim;        /* Número de dimensiones que tendrá un tensor (TENS_T). */
@@ -112,13 +114,13 @@ typedef const char *sym_name_type; /* If you are using something other */
 /* Uncomment the following to make hash buckets and scopes self organizing  */
 /* #define SYM_SELF_ORGANIZING_LISTS */
 
-/* return values returned by symtab functions                               */
+/* return values returned by symtab functions                                */
 #define SYMTAB_NO_MEMORY (-1)     /* Unable to allocate memory for binding.  */
-#define SYMTAB_OK 0                 /* Normal return.                          */
-#define SYMTAB_DUPLICATE 1         /* Name is already in symbol table.        */
-#define SYMTAB_NOT_FOUND 2         /* Name was not found.                     */
-#define SYMTAB_STACK_OVERFLOW 3     /* Attempt to exceed capacity of stack.    */
-#define SYMTAB_STACK_UNDERFLOW 4 /* Attempt to pop back to a more global    */
+#define SYMTAB_OK 0                 /* Normal return.                        */
+#define SYMTAB_DUPLICATE 1         /* Name is already in symbol table.       */
+#define SYMTAB_NOT_FOUND 2         /* Name was not found.                    */
+#define SYMTAB_STACK_OVERFLOW 3     /* Attempt to exceed capacity of stack.  */
+#define SYMTAB_STACK_UNDERFLOW 4 /* Attempt to pop back to a more global     */
 /* scope than the global scope.            */
 #define SYMTAB_NOT_TOP 5         /* Attempt to pop scope that is not top of */
 /* stack.                                  */
@@ -131,7 +133,7 @@ typedef const char *sym_name_type; /* If you are using something other */
 /* function.  Commenting out SYM_SCOPE_STACK_DEPTH has the same effect.     */
 /* #define SYM_REQUIRE_SET_SCOPE                                            */
 
-/* Uncomment out the following define if you want to use sym_global_add(),    */
+/* Uncomment out the following define if you want to use sym_global_add(),  */
 /* sym_global_enter(), sym_global_lookup() or sym_global_remove() functions */
 /* If SYM_DEEP_BINDING is not defined, then these functions will be         */
 /* not be available even if SYM_REQUIRE_GLOBAL is defined.                  */

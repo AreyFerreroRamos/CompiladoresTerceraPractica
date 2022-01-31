@@ -16,7 +16,7 @@ char *generateTmpId();
 
 /**
  * Vuelve a poner el numero del identificador del temporal a 1 para que se reciclen en diferentes
- * contextos
+ * contextos.
  */
 void restartNumberTmpId();
 
@@ -34,12 +34,12 @@ void classifyRelationalOperation(char *operation, value_info v1, value_info v2);
 /**
  *  Dado un tipo de instrucción el numero de argumentos y los datos necesarios para cada instruccion
  *  añade la instrucción al c3a. Los datos según la instrucción son los siguientes.
- *  INSTR_COPY -> (value_info variable,value_info valor).
- *  INSTR_COPY_FROM/TO_TENSOR -> (char *v1, char *v2, char *indice) v1 = v2[indice] / v1[indice] = v2
+ *  INSTR_COPY -> (value_info variable, value_info valor).
+ *  INSTR_COPY_FROM/TO_TENSOR -> (char *v1, char *v2, char *indice) v1 = v2[indice] / v1[indice] = v2.
  *  INSTR_(Operaciones) -> (value_info variable,value_info op1,value_info op2).
- *  INSTR_START -> (char* nombreFuncion).
+ *  INSTR_START -> (char *nombreFuncion).
  *  INSTR_END -> (int esAccion? (1 si es accion, 0 si es función).
- *  INSTR_RETURN -> 0 args o (char* valor).
+ *  INSTR_RETURN -> 0 args o (char *valor).
  */
 void emet(char *type, int nArgs, ...);
 
@@ -57,7 +57,7 @@ void emetTensor(char *lexema, tensor_ini_info tensor, char *tensorType);
 
 /**
  * Dada la lista de parametros y el tamaño de la lista hace un emet
- * de cada uno de ellos para que imprima "PARAM <ID>"
+ * de cada uno de ellos para que imprima "PARAM <ID>".
  */
 void emetParams(value_info *listParams, int numParams);
 
@@ -89,7 +89,7 @@ void doAritmeticOperation(value_info v1, char *operand, value_info v2, value_inf
 char *doRelationalOperation(value_info element1, char *op, value_info element2);
 
 /**
- * Dado un booleano (0/1) devuelve su contrario.
+ * Dado un booleano (true/false) devuelve su contrario.
  */
 char *negateBoolean(char *boolean);
 
@@ -150,8 +150,14 @@ char *calculateNewIndex(int dim, value_info calcIndex, value_info index);
  */
 void checkTypesInFuction(value_info *expectedParams, value_info *listParams, int numParams);
 
+/**
+ *
+ */
 void checkIfIsNeededCast(char *expectedType, value_info *arrivedValue);
 
-void completa(integer_list list,int numLinea);
+/**
+ *
+ */
+void completa(integer_list list, int numLinea);
 
 #endif

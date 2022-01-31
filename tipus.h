@@ -35,7 +35,7 @@
 #define OP_REL_EQUAL "=="
 #define OP_REL_DIFF "!="
 
-// TIPOS DE INSTRUCCIÓN.
+/* TIPOS DE INSTRUCCIÓN */
 
 #define INSTR_START "START"
 #define INSTR_END "END"
@@ -63,11 +63,11 @@
 #define INSTR_LEI "LEI"
 #define INSTR_LED "LED"
 
-#define INSTR_COPY "COPY"       // Se asigna el contenido de una variable a otra variable.
-#define INSTR_COPY_TO_TENSOR "COPY2TENSOR"              // t[] = var
-#define INSTR_COPY_FROM_TENSOR "COPYFROMTENSOR"         // var = t[]
-#define INSTR_CONSULT "CONSULT" // Se asigna el contenido de una posición de un tensor a una variable.
-#define INSTR_ASSIGN "ASSIGN"   // Se asigna el contenido de una variable en una posición del tensor.
+#define INSTR_COPY "COPY"                       // Se asigna el contenido de una variable a otra variable.
+#define INSTR_COPY_TO_TENSOR "COPY2TENSOR"      // Instrucción t[] = var.
+#define INSTR_COPY_FROM_TENSOR "COPYFROMTENSOR" // Instrucción var = t[].
+#define INSTR_CONSULT "CONSULT"                 // Se asigna el contenido de una posición de un tensor a una variable.
+#define INSTR_ASSIGN "ASSIGN"                   // Se asigna el contenido de una variable en una posición del tensor.
 #define INSTR_PARAM "PARAM"
 #define INSTR_CALL "CALL"
 #define INSTR_PUT "PUT"
@@ -77,35 +77,42 @@
 #define INSTR_BRANCH "GOTO"
 
 /**
- * Esta estructura contiene los campos necesarios para gestionar un ID
+ * Esta estructura contiene los campos necesarios para gestionar un ID.
  */
-typedef struct {
-    char *lexema;
-    int length;
-    int line;
-} ident;
+typedef struct
+{
+    char *lexema;   // Nombre del identificador.
+    int length;     // Tamaño en bytes del identificador.
+    int line;       // Línea en la que se encuentra el identificador.
+} ident_info;
 
 /**
  * Esta estructura contiene los campos necesarios para gestionar un elemento (literal, variable, tensor o función)
  * en cualquier punto del programa en el que sea usado, salvo cuando se utiliza como índice para acceder a un tensor.
  */
-typedef struct {
-    char *type;                 // Tipo del elemenento.
-    char *value;                // Valor del elemento en caso de tratarse de un literal o lexema en caso de tratarse de una variable, un tensor o una función.
-    char *valueInfoType;        // Indica si el elemento es un literal, una variable, un tensor o una función.
+typedef struct
+{
+    char *type;             // Tipo del elemenento.
+    char *value;            // Valor del elemento en caso de tratarse de un literal o lexema en caso de tratarse de una variable, un tensor o una función.
+    char *valueInfoType;    // Indica si el elemento es un literal, una variable, un tensor o una función.
 } value_info;
 
 /**
  * Esta estructura contiene los campos necesarios para gestionar un tensor
  * en el punto del programa en el que se accede a una posición del mismo.
  */
-typedef struct {
-    int index_dim;              // Posición actual del vector de dimensiones del tensor.
-    value_info calcIndex;       // Variable sobre la que se van acumulando los cálculos parciales para acceder a la posición del tensor tratándolo como si fuera un vector.
-    char *lexema;               // Nombre de la variable tensor.
+typedef struct
+{
+    int index_dim;          // Posición actual del vector de dimensiones del tensor.
+    value_info calcIndex;   // Variable sobre la que se van acumulando los cálculos parciales para acceder a la posición del tensor tratándolo como si fuera un vector.
+    char *lexema;           // Nombre de la variable tensor.
 } tensor_info;
 
-typedef struct {
+/**
+ *
+ */
+typedef struct
+{
     value_info *elements;    // Lista de variables o argumentos.
     int numElem;             // Número de variables o argumentos.
 } elements_list;
@@ -113,7 +120,8 @@ typedef struct {
 /**
  *
  */
-typedef struct {
+typedef struct
+{
     int *elements;    // Lista de variables o argumentos.
     int numElem;      // Número de variables o argumentos.
 } integer_list;
@@ -121,7 +129,8 @@ typedef struct {
 /**
  *
  */
-typedef struct {
+typedef struct
+{
     integer_list listaCiertos;
     integer_list listaFalsos;
 } boolean_info;
@@ -130,8 +139,9 @@ typedef struct {
  * Esta estructura contiene los campos necesarios para gestionar un tensor elemento a elemento
  * en el punto del programa en el que este es definido.
  */
-typedef struct {
-    int dim;                    // Dimension concreta que se esta evaluando actualmente.
+typedef struct
+{
+    int dim;                    // Dimensión concreta que se esta evaluando actualmente.
     char *type;                 // Tipo concreto que se esta evaluando actualmente.
     elements_list elemList;
 } tensor_ini_info;
@@ -139,31 +149,37 @@ typedef struct {
 /**
  * Esta estructura contiene los campos necesarios para gestionar las funciones y sus cabeceras.
  */
-typedef struct {
-    char *funcName;                 // Nombre de la función.
-    char *returnType;               // Parametro de retorno (puede ser nulo).
+typedef struct
+{
+    char *funcName;         // Nombre de la función.
+    char *returnType;       // Parametro de retorno (puede ser nulo).
     elements_list elemList;
 } func_param_info;
 
 /**
- * Esta estructura contiene los valores dentro de un rango
+ * Esta estructura contiene los valores dentro de un rango.
  */
-typedef struct {
-    char *ini;                 // Valor inicial                   for(___; ; )
-    char *despl;               // Desplazamiento                  for( ; ;___)
-    char *fin;                 // Valor maximo                    for( ;___; )
+typedef struct
+{
+    char *ini;      // Valor inicial  -->  for(___; ; ).
+    char *despl;    // Desplazamiento  -->  for( ; ;___).
+    char *fin;      // Valor maximo  -->  for( ;___; ).
 } rang_info;
 
 /**
- * Esta estructura contiene toda la información para poder manejar un for en bison
+ * Esta estructura contiene toda la información para poder manejar un for en bison.
  */
-typedef struct {
+typedef struct
+{
     rang_info rangInfo;
-    integer_list nextList;   // lista de siguientes
-    int sqComp;            // linea donde se hace la comparación del for
-    char *idFor;            // Variable a ser comparada         for( ;___; )
+    integer_list nextList;  // Lista de siguientes.
+    int sqComp;             // Línea donde se hace la comparación del for.
+    char *idFor;            // Variable a ser comparada  -->  for( ;___; ).
 } for_info;
 
+/**
+ *
+ */
 typedef struct
 {
   integer_list listaFalsos;
