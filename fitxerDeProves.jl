@@ -1,3 +1,13 @@
+function pow(a::Float64, n::Int32)::Float64
+    acum = a
+    i = 1
+    for i in 1:n
+        acum = acum * a
+    end
+    return acum
+end
+
+result = pow(2.0, 4)
 i = 1
 total = (1.0 + 2 * 3) - i
 while total < 1000.0

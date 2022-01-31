@@ -80,7 +80,7 @@
 %%
 
 
-programa : lista_de_procedimientos main | main
+programa : lista_de_procedimientos w main | w main
 
 lista_de_procedimientos : lista_de_procedimientos procedimiento | procedimiento
 
@@ -678,6 +678,10 @@ n :	{
 		$$.elements = createIntegerList(sq);
 		$$.numElem = 1;
 		emet(INSTR_BRANCH, 0);
+	}
+
+w :	{
+		emet(INSTR_START, 1, "main");
 	}
 
 

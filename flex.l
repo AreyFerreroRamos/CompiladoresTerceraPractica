@@ -20,9 +20,6 @@
   bool assignFounded = false;
   bool corcheteOpenFounded = false;
 
-    /* CONTROL INICIO DEL MAIN */
-  bool inMain = false;
-
     /* CONTROL PARA DEFINICIÓN DE FUNCIONES */
   bool inFunction = false;
   bool inHeader = false;
@@ -59,24 +56,12 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
 	}
 
 ({digit})+  {
-                if (inFunction == false && inMain == false)
-                {
-                    simpleDebug("START MAIN\n\n", 0);
-                    emet(INSTR_START, 1, "main");
-                    inMain = true;
-                }
                 simpleDebug("INTEGER ", 0);
                 yylval.enter = atoi(yytext);
                 return INTEGER;
             }
 
 ({digit})+"."({digit})+(e(-)?({digit})+)?   {
-                                                if (inFunction == false && inMain == false)
-                                                {
-                                                    simpleDebug("START MAIN\n\n", 0);
-                                                    emet(INSTR_START, 1, "main");
-                                                    inMain = true;
-                                                }
                                                 simpleDebug("FLOAT ", 0);
                                                 yylval.real = atof(yytext);
                                                 return FLOAT;
@@ -290,12 +275,6 @@ id {lletra}({lletra}|{digit}|_({lletra}|{digit}))*
             if (strlen(yytext) > ID_MAX_LENGTH)
             {
                 yyerror(generateString("ID -> %s demasiado largo", 1, yytext));
-            }
-            if (inFunction == false && inMain == false)
-            {
-                simpleDebug("START MAIN\n\n", 0);
-                emet(INSTR_START, 1, "main");
-                inMain = true;
             }
             sym_value_type entry;
             int response = getEntryMessage(yytext, &entry);
