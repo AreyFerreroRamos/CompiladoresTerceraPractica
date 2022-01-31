@@ -43,71 +43,92 @@ void printCode3Adresses()
 
 void intOperations(int num1, int num2, char *operand, int *res)
 {
-    if (strcmp(operand, OP_ARIT_SUMA) == 0) {
-        simpleDebug("Estoy en suma.\n", 1);
+    if (isSameType(operand, OP_ARIT_SUMA))
+    {
         *res = num1 + num2;
-    } else if (strcmp(operand, OP_ARIT_RESTA) == 0) {
-        simpleDebug("Estoy en resta.\n", 1);
+    }
+    else if (isSameType(operand, OP_ARIT_RESTA))
+    {
         *res = num1 - num2;
-    } else if (strcmp(operand, OP_ARIT_MULT) == 0) {
-        simpleDebug("Estoy en producto.\n", 1);
+    }
+    else if (isSameType(operand, OP_ARIT_MULT))
+    {
         *res = num1 * num2;
-    } else if (strcmp(operand, OP_ARIT_DIV) == 0) {
-        simpleDebug("Estoy en division.\n", 1);
-        if (num2 != 0) {
+    }
+    else if (isSameType(operand, OP_ARIT_DIV))
+    {
+        if (num2 != 0)
+        {
             *res = num1 / num2;
-        } else {
-            yyerror("No esta permitido dividir por 0.");
         }
-    } else if (strcmp(operand, OP_ARIT_MOD) == 0) {
-        simpleDebug("Estoy en modulo.\n", 1);
-        if (num2 != 0) {
+        else
+        {
+            yyerror("No esta permitido dividir por 0");
+        }
+    }
+    else if (isSameType(operand, OP_ARIT_MOD))
+    {
+        if (num2 != 0)
+        {
             *res = num1 % num2;
-        } else {
-            yyerror("No esta permitido dividir por 0.");
+        }
+        else
+        {
+            yyerror("No esta permitido dividir por 0");
         }
     }
 }
 
-void floatOperations(float num1, float num2, char *operand, float *res) {
-    if (strcmp(operand, OP_ARIT_SUMA) == 0) {
+void floatOperations(float num1, float num2, char *operand, float *res)
+{
+    if (isSameType(operand, OP_ARIT_SUMA))
+    {
         *res = num1 + num2;
-    } else if (strcmp(operand, OP_ARIT_RESTA) == 0) {
+    }
+    else if (isSameType(operand, OP_ARIT_RESTA))
+    {
         *res = num1 - num2;
-    } else if (strcmp(operand, OP_ARIT_MULT) == 0) {
+    }
+    else if (isSameType(operand, OP_ARIT_MULT))
+    {
         *res = num1 * num2;
-    } else if (strcmp(operand, OP_ARIT_DIV) == 0) {
-        if (num2 != 0) {
+    }
+    else if (isSameType(operand, OP_ARIT_DIV))
+    {
+        if (num2 != 0)
+        {
             *res = num1 / num2;
-        } else {
-            yyerror("No esta permitido dividir por 0.");
+        }
+        else
+        {
+            yyerror("No esta permitido dividir por 0");
         }
     }
 }
 
 int intRelationalOperations(int num1, char *op, int num2)
 {
-    if (strcmp(op, OP_REL_HIGH) == 0)
+    if (isSameType(op, OP_REL_HIGH))
     {
         return num1 > num2;
     }
-    if (strcmp(op, OP_REL_HE) == 0)
+    if (isSameType(op, OP_REL_HE))
     {
         return num1 >= num2;
     }
-    if (strcmp(op, OP_REL_LESS) == 0)
+    if (isSameType(op, OP_REL_LESS))
     {
         return num1 < num2;
     }
-    if (strcmp(op, OP_REL_LE) == 0)
+    if (isSameType(op, OP_REL_LE))
     {
         return num1 <= num2;
     }
-    if (strcmp(op, OP_REL_EQUAL) == 0)
+    if (isSameType(op, OP_REL_EQUAL))
     {
         return num1 == num2;
     }
-    if (strcmp(op, OP_REL_DIFF) == 0)
+    if (isSameType(op, OP_REL_DIFF))
     {
         return num1 != num2;
     }
@@ -115,27 +136,27 @@ int intRelationalOperations(int num1, char *op, int num2)
 
 int floatRelationalOperations(float num1, char *op, float num2)
 {
-    if (strcmp(op, OP_REL_HIGH) == 0)
+    if (isSameType(op, OP_REL_HIGH))
     {
         return num1 > num2;
     }
-    if (strcmp(op, OP_REL_HE) == 0)
+    if (isSameType(op, OP_REL_HE))
     {
         return num1 >= num2;
     }
-    if (strcmp(op, OP_REL_LESS) == 0)
+    if (isSameType(op, OP_REL_LESS))
     {
         return num1 < num2;
     }
-    if (strcmp(op, OP_REL_LE) == 0)
+    if (isSameType(op, OP_REL_LE))
     {
         return num1 <= num2;
     }
-    if (strcmp(op, OP_REL_EQUAL) == 0)
+    if (isSameType(op, OP_REL_EQUAL))
     {
         return num1 == num2;
     }
-    if (strcmp(op, OP_REL_DIFF) == 0)
+    if (isSameType(op, OP_REL_DIFF))
     {
         return num1 != num2;
     }
