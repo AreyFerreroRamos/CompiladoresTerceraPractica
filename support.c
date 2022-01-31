@@ -11,31 +11,38 @@ extern FILE *yyout;
 extern int lengthCode;
 extern char **c3a;
 
-//-------------------------EMET FUNCTIONS----------------------------
+/*-------------------------EMET FUNCTIONS----------------------------*/
 
-char *emetReturn(char *var) {
+char *emetReturn(char *var)
+{
     char *instr;
-    if (var == NULL) {
+    if (var == NULL)
+    {
         instr = strdup(INSTR_RETURN);
-    } else {
+    }
+    else
+    {
         instr = generateString("RETURN %s", 1, var);
     }
     return instr;
 }
 
 
-//-------------------------------------------------------------------
+/*-------------------------------------------------------------------*/
 
-void printCode3Adresses() {
+void printCode3Adresses()
+{
     printf("---------------------------------\n");
-    for (int i = 0; i < lengthCode; i++) {
+    for (int i = 0; i < lengthCode; i++)
+    {
         printf("%i\t%s\n", i, c3a[i]);
         fprintf(yyout, "%i\t%s\n", i, c3a[i]);
     }
     printf("---------------------------------\n");
 }
 
-void intOperations(int num1, int num2, char *operand, int *res) {
+void intOperations(int num1, int num2, char *operand, int *res)
+{
     if (strcmp(operand, OP_ARIT_SUMA) == 0) {
         simpleDebug("Estoy en suma.\n", 1);
         *res = num1 + num2;
@@ -134,55 +141,73 @@ int floatRelationalOperations(float num1, char *op, float num2)
     }
 }
 
-// FUNCIONES BASE PARA EJECUCIÓN DEL COMPILADOR
+/* FUNCIONES BASE PARA EJECUCIÓN DEL COMPILADOR */
 
-int init_analisi_lexic(char *file_name) {
+int init_analisi_lexic(char *file_name)
+{
     int error;
     yyin = fopen(file_name, "r");
-    if (yyin == NULL) {
+    if (yyin == NULL)
+    {
         error = EXIT_FAILURE;
-    } else {
+    }
+    else
+    {
         error = EXIT_SUCCESS;
     }
     return error;
 }
 
-int init_analisi_sintactic(char *filename) {
+int init_analisi_sintactic(char *filename)
+{
     int error = EXIT_SUCCESS;
     yyout = fopen(filename, "w");
-    if (yyout == NULL) {
+    if (yyout == NULL)
+    {
         error = EXIT_FAILURE;
     }
     return error;
 }
 
-int analisi_semantic() {
+int analisi_semantic()
+{
     int error;
-    if (yyparse() == 0) {
+    if (yyparse() == 0)
+    {
         error = EXIT_SUCCESS;
-    } else {
+    }
+    else
+    {
         error = EXIT_FAILURE;
     }
     return error;
 }
 
-int end_analisi_lexic() {
+int end_analisi_lexic()
+{
     int error;
     error = fclose(yyin);
-    if (error == 0) {
+    if (error == 0)
+    {
         error = EXIT_SUCCESS;
-    } else {
+    }
+    else
+    {
         error = EXIT_FAILURE;
     }
     return error;
 }
 
-int end_analisi_sintactic() {
+int end_analisi_sintactic()
+{
     int error;
     error = fclose(yyout);
-    if (error == 0) {
+    if (error == 0)
+    {
         error = EXIT_SUCCESS;
-    } else {
+    }
+    else
+    {
         error = EXIT_FAILURE;
     }
     return error;
