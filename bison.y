@@ -670,6 +670,10 @@ lista_args : lista_args COMA expresion_aritmetica	{
 					$$.numElem++;
 				}
 
+w :	{
+		emet(INSTR_START, 1, "main");
+	}
+
 m :	{
 		$$ = sq;
 	}
@@ -678,10 +682,6 @@ n :	{
 		$$.elements = createIntegerList(sq);
 		$$.numElem = 1;
 		emet(INSTR_BRANCH, 0);
-	}
-
-w :	{
-		emet(INSTR_START, 1, "main");
 	}
 
 
