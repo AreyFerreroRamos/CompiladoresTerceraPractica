@@ -109,7 +109,8 @@ typedef struct
 } tensor_info;
 
 /**
- *
+ * Esta estructura contiene los campos necesarios para gestionar una lista de elementos
+ * de tipo value_info.
  */
 typedef struct
 {
@@ -118,7 +119,8 @@ typedef struct
 } elements_list;
 
 /**
- *
+ * Esta estructura contiene los campos necesarios para gestionar una lista de elementos
+ * de tipo entero.
  */
 typedef struct
 {
@@ -127,12 +129,13 @@ typedef struct
 } integer_list;
 
 /**
- *
+ * Esta estructura contiene los campos necesarios para gestionar una conjunto de
+ * condiciones booleanas.
  */
 typedef struct
 {
-    integer_list listaCiertos;
-    integer_list listaFalsos;
+    integer_list listaCiertos;  // Lista de condiciones cuyo valor es cierto.
+    integer_list listaFalsos;   // Lista de condiciones cuyo valor es falso.
 } boolean_info;
 
 /**
@@ -178,12 +181,12 @@ typedef struct
 } for_info;
 
 /**
- *
+ * Esta estructura contiene toda la información para poder manejar un elseif en bison.
  */
 typedef struct
 {
-  integer_list listaFalsos;
-  integer_list listaSiguientes;
+  integer_list listaFalsos;         // Lista de condiciones falsas.
+  integer_list listaSiguientes;     // Lista de las siguientes condiciones.
 } elseif_info;
 
 #endif

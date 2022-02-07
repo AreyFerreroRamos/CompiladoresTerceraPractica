@@ -599,19 +599,19 @@ cabecera_accion : START ID_PROC PARENTESIS_ABIERTO lista_params PARENTESIS_CERRA
 
 lista_params : lista_params COMA param	{
 						$$ = $1;
-						$$.elemList.elements = addValueInfoBase($1.elemList.elements, $1.elemList.numElem, $3);
+						$$.elemList.elements = addValueInfo($1.elemList.elements, $1.elemList.numElem, $3);
 						$$.elemList.numElem++;
 
 					}
 		| param	{
 				$$.elemList.numElem = 0;
-				$$.elemList.elements = addValueInfoBase($$.elemList.elements, $$.elemList.numElem, $1);
+				$$.elemList.elements = addValueInfo($$.elemList.elements, $$.elemList.numElem, $1);
 				$$.elemList.numElem++;
 			}
 
 param : ID DOBLE_DOS_PUNTOS TIPO	{
 						value_info v = createValueInfo($1.lexema, $3, VAR_T);
-						sym_value_type entry = castValueInfoBaseToSymValueType(v);
+						sym_value_type entry = castValueInfoToSymValueType(v);
 						addOrUpdateEntry(v.value, entry);
 						$$ = v;
 					}
@@ -619,7 +619,7 @@ param : ID DOBLE_DOS_PUNTOS TIPO	{
 										if (isSameType($3, TENSOR_T))
 										{
 											value_info v = createValueInfo($1.lexema, $5, TENS_T);
-											sym_value_type entry = castValueInfoBaseToSymValueType(v);
+											sym_value_type entry = castValueInfoToSymValueType(v);
 											addOrUpdateEntry(v.value, entry);
 											$$ = v;
 										}
@@ -661,12 +661,12 @@ accion : ID_ACC PARENTESIS_ABIERTO lista_args PARENTESIS_CERRADO	{
 
 lista_args : lista_args COMA expresion_aritmetica	{
 								$$ = $1;
-								$$.elements = addValueInfoBase($1.elements, $1.numElem, $3);
+								$$.elements = addValueInfo($1.elements, $1.numElem, $3);
 								$$.numElem++;
 							}
 	| expresion_aritmetica	{
 					$$.numElem = 0;
-					$$.elements = addValueInfoBase($$.elements, $$.numElem, $1);
+					$$.elements = addValueInfo($$.elements, $$.numElem, $1);
 					$$.numElem++;
 				}
 

@@ -21,13 +21,14 @@ char *generateTmpId();
 void restartNumberTmpId();
 
 /**
- * Dado un operador y los operadores ejecuta la función emet() con la
+ * Dado un operador aritmético y sus operandos ejecuta la función emet() con la
  * instrucción adecuada.
  */
 void classifyOperation(char *operation, value_info v1, value_info v2, value_info v3);
 
 /**
- *
+ * Dado un operador relacional y sus operandos ejecuta la función emet() con la
+ * instrucción adecuada.
  */
 void classifyRelationalOperation(char *operation, value_info v1, value_info v2);
 
@@ -44,7 +45,8 @@ void classifyRelationalOperation(char *operation, value_info v1, value_info v2);
 void emet(char *type, int nArgs, ...);
 
 /**
- *
+ * Dado el índice de un tensor, se multiplica por la dimensión (número de buytes) que ocupan los elementos
+ * que lo constituyen para acceder de forma correcta a la posición referenciada.
  */
 void controlTensorIndex(value_info *v, char *tensorType);
 
@@ -124,7 +126,7 @@ int getAcumElemDim(int *elem_dim, int num_dim);
  * Dada una lista de parametros, el numero de parametros que hay y un nuevo parametro a
  * añadir reserva el espacio necesario e introduce el nuevo elemento.
  */
-value_info *addValueInfoBase(value_info *list, int numElem, value_info toAdd);
+value_info *addValueInfo(value_info *list, int numElem, value_info toAdd);
 
 /**
  * Dada una lista de enteros, el numero de enteros que hay y un nuevo entero a
@@ -133,9 +135,11 @@ value_info *addValueInfoBase(value_info *list, int numElem, value_info toAdd);
 int *createIntegerList(int elem);
 
 /**
- *
+ * Dada una estructura con la información en el formato para traspasar la información
+ * en el recorrido realizado por bison (value_info), se transforma en al formato
+ * con la información para su almacenamiento en la tabla de símbolos (sym_value_type).
  */
-sym_value_type castValueInfoBaseToSymValueType(value_info v);
+sym_value_type castValueInfoToSymValueType(value_info v);
 
 /**
  * Dada la dimension actual, el cálculo del indice hasta ahora y el nuevo indice a introducir
@@ -151,12 +155,13 @@ char *calculateNewIndex(int dim, value_info calcIndex, value_info index);
 void checkTypesInFuction(value_info *expectedParams, value_info *listParams, int numParams);
 
 /**
- *
+ * Se comprueba si es necesario hacer un casting.
  */
 void checkIfIsNeededCast(char *expectedType, value_info *arrivedValue);
 
 /**
- *
+ * Dada una lista de condiciones y un número de línea, se completan aquellas directivas
+ * de salto cuya posición de salto era desconocida.
  */
 void completa(integer_list list, int numLinea);
 

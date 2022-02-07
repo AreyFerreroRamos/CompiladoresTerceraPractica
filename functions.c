@@ -431,7 +431,7 @@ int getAcumElemDim(int *elem_dim, int num_dim)
     return acum;
 }
 
-value_info *addValueInfoBase(value_info *list, int numElem, value_info toAdd)
+value_info *addValueInfo(value_info *list, int numElem, value_info toAdd)
 {
     value_info *aux;
     if (numElem == 0)
@@ -453,7 +453,7 @@ int *createIntegerList(int elem)
     return aux;
 }
 
-sym_value_type castValueInfoBaseToSymValueType(value_info v)
+sym_value_type castValueInfoToSymValueType(value_info v)
 {
     return createSymValueType(v.type, 0, 0, NULL, NULL, v.valueInfoType);
 }
